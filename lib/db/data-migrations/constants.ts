@@ -28,3 +28,9 @@ export const JAVA_LANE_DATA_MIGRATION = '025-java-lane';
  * wins over the levels its body mentions ("mentor junior engineers").
  */
 export const TITLE_FIRST_SENIORITY_DATA_MIGRATION = '026-title-first-seniority';
+
+/**
+ * Rewrites every active job's score now that "(Contract)" in a title is a
+ * contractor engagement on the Java lane.
+ */
+export const CONTRACT_TITLE_DATA_MIGRATION = '027-contract-title';

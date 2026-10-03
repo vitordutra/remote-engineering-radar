@@ -312,9 +312,20 @@ const CONTRACTOR_POSTINGS = [
   { title: JAVA_DEVELOPER_TITLE, description: 'C2C or W2 accepted.' },
   { title: JAVA_DEVELOPER_TITLE, description: 'Long-term B2B contract.' },
   { title: 'Desenvolvedor Java Pleno', description: 'Contratação PJ.' },
+  { title: 'Junior Java Developer (Contract)' },
+  { title: 'Java Developer - 6 Month Contract' },
+  { title: 'Contract-to-Hire Java Developer' },
 ];
 const NON_CONTRACTOR_POSTINGS = [
   { title: JAVA_DEVELOPER_TITLE, description: 'Full-time W2 role. No C2C.' },
+  {
+    title: 'Senior Solidity Smart Contract Engineer',
+    description: 'Audit smart contracts.',
+  },
+  {
+    title: JAVA_DEVELOPER_TITLE,
+    description: 'Review contract terms with our legal team.',
+  },
   {
     title: JAVA_DEVELOPER_TITLE,
     description: 'We build B2B SaaS for logistics.',
