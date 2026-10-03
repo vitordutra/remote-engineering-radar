@@ -38,8 +38,9 @@ export const PT_VOCABULARY: ClassificationVocabulary = {
     senior: [],
   },
   // "Pleno domínio" and "estágio do negócio" are ordinary phrases in a body.
+  // A trainee program is a full-time entry-level job, not an internship.
   seniorityTitle: {
-    junior: [/\bestagi(?:o|ari[oa])\b/i],
+    junior: [/\bestagi(?:o|ari[oa])\b/i, /\btrainee\b/i],
     mid: [/\bpleno\b/i],
     principal: [],
     staff: [],
@@ -90,6 +91,9 @@ export const PT_VOCABULARY: ClassificationVocabulary = {
   ],
   techTermTitle: [/\b(?:dados|seguranca|automacao|ti)\b/i],
   relocation: [/\b(?:realocacao|relocacao)\b/i],
+  // Pessoa Jurídica: invoicing as a company, the Brazilian contractor model.
+  contractor: [/\bpj\b/i],
+  workAuthorization: [],
   geography: {
     brazil: [/\bbrasil\b/i, /\bsao paulo\b/i],
     latam: [

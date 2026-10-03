@@ -48,5 +48,9 @@ export type ClassificationVocabulary = {
    */
   techTermTitle: Patterns;
   relocation: Patterns;
+  /** An engagement as a contractor rather than an employee. */
+  contractor: Patterns;
+  /** A requirement only a US worker can meet: W2 only, US citizens only. */
+  workAuthorization: Patterns;
   geography: Record<'brazil' | 'latam' | 'americas' | 'worldwide', Patterns>;
 };

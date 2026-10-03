@@ -25,4 +25,6 @@ export type JobClassification = {
   isUnrelatedStack: boolean;
   isUnrelatedRole: boolean;
   requiresRelocation: boolean;
+  isContractor: boolean;
+  requiresWorkAuthorization: boolean;
 };
