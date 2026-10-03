@@ -22,3 +22,9 @@ export const LANE_RULES_DATA_MIGRATION = '024-lane-rules';
  * a stored Java + React fullstack job moves from React to Java.
  */
 export const JAVA_LANE_DATA_MIGRATION = '025-java-lane';
+
+/**
+ * Rewrites every active job's seniority and score now that a title's level
+ * wins over the levels its body mentions ("mentor junior engineers").
+ */
+export const TITLE_FIRST_SENIORITY_DATA_MIGRATION = '026-title-first-seniority';

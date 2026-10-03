@@ -172,10 +172,18 @@ RED → GREEN → REFACTOR. Every SPEC-023 case stays green, plus:
 - The sitemap lists `?focus=all` and never `?focus=java`
 - The `025-java-lane` data migration reclassifies active jobs once
 
+## Follow-up: title-first seniority
+
+Seniority read the whole posting, most junior first, so "Desenvolvedora Backend
+Plena" whose body says "apoiar desenvolvedores Júnior" classified as junior.
+Now the title is read first, with both seniority vocabularies; the body is read
+only when the title names no level. This applies to every lane. The
+`026-title-first-seniority` data migration reclassifies active jobs once.
+
 ## Debt
 
-- Seniority still reads the whole posting first: a senior posting that says
-  "mentor junior engineers" classifies as junior (pre-existing).
+- A title with no level still takes the body's most junior mention: an
+  unlabeled "Java Developer" that mentions mentoring juniors is junior.
 - A generic-title Android posting whose body names Kotlin + Gradle + JUnit and
   never says Android in the title can land on Java.
 - "(Contract)" in a title is not a contractor signal; only the listed terms are.
