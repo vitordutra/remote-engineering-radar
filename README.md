@@ -1,8 +1,9 @@
 # Remote Engineering Radar
 
 Public, automated radar for remote software engineering jobs outside LinkedIn.
-Focused on Senior Frontend, Fullstack, React, and React Native roles in Brazil,
-LATAM, and the Americas.
+Focused on Junior, Mid-level, and Senior Java roles, backend or fullstack, plus
+Senior Frontend, Fullstack, React, and React Native roles, in Brazil, LATAM, and
+the Americas.
 
 ## Stack
 
