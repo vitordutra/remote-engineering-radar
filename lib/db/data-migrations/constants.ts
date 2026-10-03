@@ -16,3 +16,9 @@ export const LEGACY_GEOGRAPHY_COUNTRIES_DATA_MIGRATION =
  * SPEC-023, so jobs that only mentioned iOS or Android leave Mobile.
  */
 export const LANE_RULES_DATA_MIGRATION = '024-lane-rules';
+
+/**
+ * Rewrites every active job's roleFocus with the Java lane from SPEC-025, so
+ * a stored Java + React fullstack job moves from React to Java.
+ */
+export const JAVA_LANE_DATA_MIGRATION = '025-java-lane';
