@@ -16,6 +16,7 @@ export type JobClassification = {
     | 'fullstack'
     | 'backend'
     | 'mobile'
+    | 'java'
     | 'react'
     | 'platform'
     | 'annotation'
@@ -25,4 +26,6 @@ export type JobClassification = {
   isUnrelatedStack: boolean;
   isUnrelatedRole: boolean;
   requiresRelocation: boolean;
+  isContractor: boolean;
+  requiresWorkAuthorization: boolean;
 };

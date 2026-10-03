@@ -8,11 +8,14 @@ import { CompanySummary } from '@/components/report/CompanySummary/CompanySummar
 import { CompanyJobs } from '@/components/report/CompanyJobs/CompanyJobs';
 import {
   JOB_COUNTRY_FILTER_OPTIONS,
-  JOB_FOCUS_FILTER_OPTIONS,
+  JOB_FOCUS_ALL,
+  JOB_FOCUS_TABS,
   type JobCountrySlug,
   type JobFocusSlug,
 } from '@/lib/jobs/constants';
+import { focusSearchValue } from '@/lib/report/focus-search-value/focus-search-value';
 import { formatUpdatedLabel } from '@/lib/report/format';
+import { parseFocusFilter } from '@/lib/report/parse-focus-filter';
 import type { CompaniesPageData } from '@/lib/report/get-companies-page-data';
 import { isSafeExternalUrl } from '@/lib/urls/external-url';
 import { COMPANY_SORTS, type CompanySort } from './home-constants';
@@ -29,11 +32,12 @@ const homeHref = (
   focus: JobFocusSlug | undefined,
 ) => {
   const params = new URLSearchParams();
+  const focusValue = focusSearchValue(focus);
   if (country) {
     params.set('country', country);
   }
-  if (focus) {
-    params.set('focus', focus);
+  if (focusValue) {
+    params.set('focus', focusValue);
   }
   const query = params.toString();
   return query ? `/?${query}` : '/';
@@ -46,11 +50,12 @@ const companyJobsHref = (
   focus: JobFocusSlug | undefined,
 ) => {
   const params = new URLSearchParams({ company });
+  const focusValue = focusSearchValue(focus);
   if (country) {
     params.set('country', country);
   }
-  if (focus) {
-    params.set('focus', focus);
+  if (focusValue) {
+    params.set('focus', focusValue);
   }
   return `/jobs?${params.toString()}`;
 };
@@ -66,21 +71,20 @@ export const CompaniesReport = ({ data }: { data: CompaniesPageData }) => {
         aria-label={messages.jobs.focusLabel}
         className="flex flex-wrap gap-3 text-sm"
       >
-        <Link
-          href={localizedPath(locale, homeHref(data.country, undefined))}
-          className={data.focus ? INACTIVE_TAB : ACTIVE_TAB}
-        >
-          {messages.jobs.focusAll}
-        </Link>
-        {JOB_FOCUS_FILTER_OPTIONS.map((option) => (
-          <Link
-            key={option.slug}
-            href={localizedPath(locale, homeHref(data.country, option.slug))}
-            className={data.focus === option.slug ? ACTIVE_TAB : INACTIVE_TAB}
-          >
-            {messages.focus[option.slug]}
-          </Link>
-        ))}
+        {JOB_FOCUS_TABS.map((tab) => {
+          const focus = parseFocusFilter(tab);
+          return (
+            <Link
+              key={tab}
+              href={localizedPath(locale, homeHref(data.country, focus))}
+              className={data.focus === focus ? ACTIVE_TAB : INACTIVE_TAB}
+            >
+              {tab === JOB_FOCUS_ALL
+                ? messages.jobs.focusAll
+                : messages.focus[tab]}
+            </Link>
+          );
+        })}
       </nav>
       <nav
         aria-label={messages.home.countryFilterLabel}

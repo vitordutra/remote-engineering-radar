@@ -10,7 +10,7 @@ export const TEST_REPORT_COMPANY: ReportCompanyCard = {
   summary: 'Strong hiring signal',
   signalDescriptions: [
     'Company currently has 7 engineering positions open.',
-    '3 open roles involve React/TypeScript/Node hiring.',
+    '3 open roles involve relevant technologies.',
   ],
   websiteUrl: 'https://acme.example',
   openEngineeringJobs: 7,

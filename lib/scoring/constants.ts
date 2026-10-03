@@ -27,11 +27,37 @@ export const SCORE_WEIGHTS = {
     GCP: 15,
     Ansible: 10,
   },
+  /**
+   * The Java track's own tables. The technology weights mirror the React
+   * table, and every level the fork tracks earns the same: a junior Java job
+   * is as relevant here as a senior one.
+   */
+  javaTechnologies: {
+    Java: 25,
+    Spring: 20,
+    Kotlin: 15,
+    Hibernate: 15,
+    Quarkus: 15,
+    Micronaut: 15,
+  },
+  javaSeniority: {
+    senior: 15,
+    staff: 10,
+    mid: 15,
+    junior: 15,
+    principal: 0,
+  },
   roleFocus: {
     frontend: 10,
     fullstack: 10,
     platform: 10,
+    /** Java lane only, so backend and fullstack Java rank the same. */
+    backend: 10,
   },
+  /** Java lane only. */
+  contractor: 10,
+  /** Java lane only: a W2-only or US-citizens-only job is out of reach. */
+  workAuthorizationRequired: -40,
   remote: 10,
   geography: {
     brazil: 15,

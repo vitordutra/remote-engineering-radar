@@ -1,5 +1,6 @@
 import {
   DATA_ANNOTATION_ROLE_FOCUS,
+  JAVA_ROLE_FOCUS,
   MOBILE_ROLE_FOCUS,
   PLATFORM_ROLE_FOCUS,
   PRODUCT_ROLE_FOCUS,
@@ -11,6 +12,7 @@ import {
   JOB_FOCUS_DATA_ANNOTATION,
   JOB_FOCUS_ENGINEERING,
   JOB_FOCUS_FILTER_OPTIONS,
+  JOB_FOCUS_JAVA,
   JOB_FOCUS_MOBILE,
   JOB_FOCUS_PRODUCT,
   JOB_MAX_AGE_MS,
@@ -474,6 +476,7 @@ describe('createJobsRepository', () => {
       'engineering-role': ['frontend', REACT_ROLE_FOCUS, SOFTWARE_ROLE_FOCUS],
       'platform-role': [PLATFORM_ROLE_FOCUS, SOFTWARE_ROLE_FOCUS],
       'mobile-role': [MOBILE_ROLE_FOCUS, SOFTWARE_ROLE_FOCUS],
+      'java-role': ['backend', JAVA_ROLE_FOCUS, SOFTWARE_ROLE_FOCUS],
       'annotation-role': ['fullstack', DATA_ANNOTATION_ROLE_FOCUS],
       'product-role': [PRODUCT_ROLE_FOCUS],
       'software-only-role': ['frontend', SOFTWARE_ROLE_FOCUS],
@@ -502,6 +505,7 @@ describe('createJobsRepository', () => {
     );
 
     expect(Object.fromEntries(idsByFocus)).toEqual({
+      [JOB_FOCUS_JAVA]: ['java-role'],
       [JOB_FOCUS_ENGINEERING]: ['engineering-role'],
       [JOB_FOCUS_CLOUD_OPS]: ['platform-role'],
       [JOB_FOCUS_MOBILE]: ['mobile-role'],

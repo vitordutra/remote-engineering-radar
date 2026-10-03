@@ -1,5 +1,6 @@
 import {
   DATA_ANNOTATION_ROLE_FOCUS,
+  JAVA_ROLE_FOCUS,
   MOBILE_ROLE_FOCUS,
   PLATFORM_ROLE_FOCUS,
   PRODUCT_ROLE_FOCUS,
@@ -10,6 +11,11 @@ import { anyOf } from './any-of';
 import {
   CLOUD_SUPPORT_MINIMUM,
   CLOUD_SUPPORT_TERMS,
+  JAVA_ANCHORS,
+  JAVA_EXCLUDED_POSITIONS,
+  JAVA_SUPPORT_MINIMUM,
+  JAVA_SUPPORT_TERMS,
+  JAVA_TITLE_VETOES,
   MOBILE_TERMS,
   MOBILE_TITLE_NAMES,
   PRODUCT_POSITIONS,
@@ -27,8 +33,9 @@ import type { LaneInput, LaneRoleFocus, LaneStrategy } from './types';
 /**
  * First lane whose rules all pass wins. Order is narrowest claim first: a
  * product or annotation posting names its own job, a cloud posting needs its
- * tools, and React is what is left of the software jobs. Adding a lane is one
- * row here; adding a condition is one rule in that row.
+ * tools, and React is what is left of the software jobs. Java comes before
+ * React, so a fullstack posting that qualifies for both is Java. Adding a lane
+ * is one row here; adding a condition is one rule in that row.
  */
 const LANE_STRATEGIES: readonly LaneStrategy[] = [
   {
@@ -56,6 +63,19 @@ const LANE_STRATEGIES: readonly LaneStrategy[] = [
       anyOf({ terms: MOBILE_TITLE_NAMES, titleOnly: true }),
       anyOf({ terms: MOBILE_TERMS }),
       titleMatchesNone([...QA_POSITIONS, ...PRODUCT_POSITIONS]),
+    ],
+  },
+  {
+    roleFocus: JAVA_ROLE_FOCUS,
+    rules: [
+      titleMatchesNone(JAVA_EXCLUDED_POSITIONS),
+      titleMatchesNone(JAVA_TITLE_VETOES, { unless: JAVA_ANCHORS }),
+      titleAnchorOrBodyPlusN({
+        titleAnchors: JAVA_ANCHORS,
+        bodyAnchors: JAVA_ANCHORS,
+        support: JAVA_SUPPORT_TERMS,
+        n: JAVA_SUPPORT_MINIMUM,
+      }),
     ],
   },
   {

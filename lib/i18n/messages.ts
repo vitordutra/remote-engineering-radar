@@ -7,9 +7,9 @@ export const EN_MESSAGES = {
   app: {
     name: 'Remote Engineering Radar',
     focusStack:
-      'React, TypeScript, Node.js, GraphQL, React Native, and Cloud & Ops',
+      'Java, Spring Boot, and Kotlin; React, TypeScript, Node.js, GraphQL, and React Native; and Cloud & Ops',
     description:
-      'Remote senior tech jobs and the companies hiring for them: React Engineering (React, TypeScript, Node.js, GraphQL, React Native), Cloud & Ops, Product, and Data Annotation, with Brazil and LATAM filters.',
+      'Remote tech jobs and the companies hiring for them, led by Java Engineering for junior, mid-level, and senior developers (Java, Spring Boot, Kotlin), plus React Engineering (React, TypeScript, Node.js, GraphQL, React Native), Cloud & Ops, Mobile, Product, and Data Annotation, with Brazil and LATAM filters.',
   },
   navigation: {
     label: 'Main navigation',
@@ -22,7 +22,7 @@ export const EN_MESSAGES = {
   },
   home: {
     subtitle:
-      'Companies hiring remote senior talent in React, TypeScript, Node.js, GraphQL and React Native, Cloud & Ops, Product, and Data Annotation.',
+      'Companies hiring remote Java developers – junior, mid-level, and senior, backend or fullstack – plus React, TypeScript, Node.js, GraphQL and React Native, Cloud & Ops, Product, and Data Annotation talent.',
     companiesToWatch: 'Companies to watch',
     relevantJobs: 'Relevant jobs',
     seeAllJobs: (count: number) => `See all ${count} jobs`,
@@ -42,8 +42,8 @@ export const EN_MESSAGES = {
   jobs: {
     title: 'Jobs',
     subtitle:
-      'Search remote senior openings in React, TypeScript, Node.js, GraphQL and React Native, Cloud & Ops, Product, and Data Annotation.',
-    metaTitle: 'Remote React, Cloud, Product & AI Annotation Jobs',
+      'Search remote Java openings for junior, mid-level, and senior developers, backend or fullstack, plus React, TypeScript, Node.js, GraphQL and React Native, Cloud & Ops, Product, and Data Annotation roles.',
+    metaTitle: 'Remote Java Developer Jobs: Junior, Mid-level & Senior',
     filtersHeading: 'Filters',
     focusLabel: 'Focus area',
     focusAll: 'All roles',
@@ -72,23 +72,31 @@ export const EN_MESSAGES = {
       `${title}. Remote engineering opportunity${location ? ` in ${location}` : ''}. View the role and original listing.`,
   },
   seo: {
-    homeTitle: 'Remote React, Cloud & Product Jobs',
+    homeTitle: 'Companies Hiring Remote Java Developers',
+    allCompaniesTitle:
+      'Companies hiring remote Java, React, Cloud & Product talent',
+    allCompaniesDescription:
+      'Companies with open remote roles in Java Engineering, React Engineering, Cloud & Ops, Mobile, Product, and Data Annotation, ranked by hiring signal. Updated daily.',
     countryCompaniesTitle: (place: string) =>
-      `Remote tech companies hiring – ${place}`,
+      `Companies hiring remote Java developers – ${place}`,
     countryCompaniesDescription: (place: string) =>
-      `Companies with open remote senior roles in React Engineering, Cloud & Ops, Product, and Data Annotation – ${place}. Updated daily.`,
+      `Companies with open remote junior, mid-level, and senior Java roles – ${place}. Updated daily.`,
     focusCompaniesTitle: (track: string) =>
       `Companies hiring remote ${track} roles`,
     focusCompaniesDescription: (track: string) =>
       `Companies with open remote senior ${track} roles, ranked by hiring signal. Updated daily.`,
-    countryJobsTitle: (place: string) => `Remote tech jobs – ${place}`,
+    allJobsTitle: 'Remote Java, React, Cloud & Product Jobs',
+    allJobsDescription:
+      'Remote Java Engineering, React Engineering, Cloud & Ops, Mobile, Product, and Data Annotation jobs from public job boards. Updated daily.',
+    countryJobsTitle: (place: string) => `Remote Java jobs – ${place}`,
     countryJobsDescription: (place: string) =>
-      `Remote senior React Engineering, Cloud & Ops, Product, and Data Annotation jobs – ${place}. Updated daily.`,
+      `Remote junior, mid-level, and senior Java jobs, backend or fullstack – ${place}. Updated daily.`,
     focusJobsTitle: (track: string) => `Remote ${track} jobs`,
     focusJobsDescription: (track: string) =>
       `Remote senior ${track} jobs from public job boards. Updated daily.`,
   },
   focus: {
+    java: 'Java Engineering',
     engineering: 'React Engineering',
     'cloud-ops': 'Cloud & Ops',
     mobile: 'Mobile',
@@ -124,6 +132,7 @@ export const EN_MESSAGES = {
     Junior: 'Junior',
     Frontend: 'Frontend',
     Fullstack: 'Fullstack',
+    Backend: 'Backend',
     Platform: 'Cloud & Ops',
     Remote: 'Remote',
     'On-site only': 'On-site only',
@@ -131,6 +140,8 @@ export const EN_MESSAGES = {
     LATAM: 'LATAM',
     Americas: 'Americas',
     'Relocation required': 'Relocation required',
+    Contractor: 'Contractor',
+    'Work authorization required': 'US work authorization required',
     'Unrelated stack': 'Unrelated stack',
     'Unrelated role': 'Unrelated role',
   },
@@ -232,7 +243,7 @@ export const EN_MESSAGES = {
     scoring:
       'Scores are heuristics over public text — not endorsements of a company or role.',
     scoringJob:
-      'The radar tracks four focus areas. React Engineering and Cloud & Ops are scored on equal footing: React Engineering favors React, TypeScript, Node.js, GraphQL, and React Native; Cloud & Ops favors AWS, Kubernetes, Terraform, Docker, Azure, and GCP. Data Annotation groups AI training, data labeling, and RLHF roles. Product groups product manager and product owner roles. All four favor senior/staff titles, remote work, and Brazil/LATAM/Americas geography. Junior, onsite-only, relocation-required, and unrelated stacks are heavily down-ranked.',
+      'The radar tracks six focus areas and opens on Java Engineering. Java Engineering has its own scoring: it favors Java, Spring, Kotlin, Hibernate/JPA, Quarkus, and Micronaut, ranks junior, mid-level, and senior roles equally, backend or fullstack, favors contractor engagements, and down-ranks roles that require US work authorization (W2 only, US citizens only). React Engineering favors React, TypeScript, Node.js, GraphQL, and React Native; Cloud & Ops favors AWS, Kubernetes, Terraform, Docker, Azure, and GCP. Mobile groups iOS and Android roles, Data Annotation groups AI training, data labeling, and RLHF roles, and Product groups product manager and product owner roles. Outside Java, senior/staff titles are favored and junior roles are heavily down-ranked. Every area favors remote work and Brazil/LATAM/Americas geography, and down-ranks onsite-only, relocation-required, and unrelated stacks.',
     scoringCompany:
       'Company hiring score aggregates active engineering openings, recent posting bursts, relevant tech matches, and leadership roles — again from public listings only.',
     applications:
@@ -250,9 +261,9 @@ export const PT_BR_MESSAGES: typeof EN_MESSAGES = {
   app: {
     name: 'Remote Engineering Radar',
     focusStack:
-      'React, TypeScript, Node.js, GraphQL, React Native e Cloud & Ops',
+      'Java, Spring Boot e Kotlin; React, TypeScript, Node.js, GraphQL e React Native; e Cloud & Ops',
     description:
-      'Vagas remotas sênior de tecnologia e as empresas que estão contratando: Engenharia React (React, TypeScript, Node.js, GraphQL, React Native), Cloud & Ops, Produto e Anotação de Dados, com filtros para Brasil e LATAM.',
+      'Vagas remotas de tecnologia e as empresas que estão contratando, com destaque para Engenharia Java para pessoas desenvolvedoras júnior, plenas e sêniores (Java, Spring Boot, Kotlin), além de Engenharia React (React, TypeScript, Node.js, GraphQL, React Native), Cloud & Ops, Mobile, Produto e Anotação de Dados, com filtros para Brasil e LATAM.',
   },
   navigation: {
     label: 'Navegação principal',
@@ -265,7 +276,7 @@ export const PT_BR_MESSAGES: typeof EN_MESSAGES = {
   },
   home: {
     subtitle:
-      'Empresas contratando profissionais sênior para trabalho remoto em React, TypeScript, Node.js, GraphQL e React Native, Cloud & Ops, Produto e Anotação de Dados.',
+      'Empresas contratando pessoas desenvolvedoras Java para trabalho remoto – júnior, pleno e sênior, backend ou fullstack – além de React, TypeScript, Node.js, GraphQL e React Native, Cloud & Ops, Produto e Anotação de Dados.',
     companiesToWatch: 'Empresas para acompanhar',
     relevantJobs: 'Vagas relevantes',
     seeAllJobs: (count: number) => `Ver todas as ${count} vagas`,
@@ -285,8 +296,8 @@ export const PT_BR_MESSAGES: typeof EN_MESSAGES = {
   jobs: {
     title: 'Vagas',
     subtitle:
-      'Busque vagas remotas sênior em React, TypeScript, Node.js, GraphQL e React Native, Cloud & Ops, Produto e Anotação de Dados.',
-    metaTitle: 'Vagas remotas em React, Cloud, Produto e Anotação de IA',
+      'Busque vagas remotas de Java júnior, pleno e sênior, backend ou fullstack, além de React, TypeScript, Node.js, GraphQL e React Native, Cloud & Ops, Produto e Anotação de Dados.',
+    metaTitle: 'Vagas remotas de Java: júnior, pleno e sênior',
     filtersHeading: 'Filtros',
     focusLabel: 'Área de foco',
     focusAll: 'Todas as áreas',
@@ -315,24 +326,31 @@ export const PT_BR_MESSAGES: typeof EN_MESSAGES = {
       `${title}. Oportunidade remota de engenharia${location ? ` em ${location}` : ''}. Veja a vaga e o anúncio original.`,
   },
   seo: {
-    homeTitle: 'Vagas remotas em React, Cloud e Produto',
+    homeTitle: 'Empresas com vagas remotas de Java',
+    allCompaniesTitle:
+      'Empresas contratando remoto em Java, React, Cloud e Produto',
+    allCompaniesDescription:
+      'Empresas com vagas remotas em Engenharia Java, Engenharia React, Cloud & Ops, Mobile, Produto e Anotação de Dados, ordenadas por sinal de contratação. Atualizado diariamente.',
     countryCompaniesTitle: (place: string) =>
-      `Empresas de tecnologia contratando remoto – ${place}`,
+      `Empresas com vagas remotas de Java – ${place}`,
     countryCompaniesDescription: (place: string) =>
-      `Empresas com vagas remotas sênior em Engenharia React, Cloud & Ops, Produto e Anotação de Dados – ${place}. Atualizado diariamente.`,
+      `Empresas com vagas remotas de Java júnior, pleno e sênior – ${place}. Atualizado diariamente.`,
     focusCompaniesTitle: (track: string) =>
       `Empresas contratando remoto em ${track}`,
     focusCompaniesDescription: (track: string) =>
       `Empresas com vagas remotas sênior em ${track}, ordenadas por sinal de contratação. Atualizado diariamente.`,
-    countryJobsTitle: (place: string) =>
-      `Vagas remotas de tecnologia – ${place}`,
+    allJobsTitle: 'Vagas remotas em Java, React, Cloud e Produto',
+    allJobsDescription:
+      'Vagas remotas de Engenharia Java, Engenharia React, Cloud & Ops, Mobile, Produto e Anotação de Dados em fontes públicas. Atualizado diariamente.',
+    countryJobsTitle: (place: string) => `Vagas remotas de Java – ${place}`,
     countryJobsDescription: (place: string) =>
-      `Vagas remotas sênior em Engenharia React, Cloud & Ops, Produto e Anotação de Dados – ${place}. Atualizado diariamente.`,
+      `Vagas remotas de Java júnior, pleno e sênior, backend ou fullstack – ${place}. Atualizado diariamente.`,
     focusJobsTitle: (track: string) => `Vagas remotas de ${track}`,
     focusJobsDescription: (track: string) =>
       `Vagas remotas sênior de ${track} em fontes públicas. Atualizado diariamente.`,
   },
   focus: {
+    java: 'Engenharia Java',
     engineering: 'Engenharia React',
     'cloud-ops': 'Cloud & Ops',
     mobile: 'Mobile',
@@ -368,6 +386,7 @@ export const PT_BR_MESSAGES: typeof EN_MESSAGES = {
     Junior: 'Júnior',
     Frontend: 'Frontend',
     Fullstack: 'Fullstack',
+    Backend: 'Backend',
     Platform: 'Cloud & Ops',
     Remote: 'Remoto',
     'On-site only': 'Somente presencial',
@@ -375,6 +394,8 @@ export const PT_BR_MESSAGES: typeof EN_MESSAGES = {
     LATAM: 'América Latina',
     Americas: 'Américas',
     'Relocation required': 'Mudança de cidade ou país obrigatória',
+    Contractor: 'Contratação como contractor ou PJ',
+    'Work authorization required': 'Exige autorização de trabalho nos EUA',
     'Unrelated stack': 'Tecnologias fora do foco',
     'Unrelated role': 'Cargo fora do foco',
   },
@@ -478,7 +499,7 @@ export const PT_BR_MESSAGES: typeof EN_MESSAGES = {
     scoring:
       'As pontuações são heurísticas sobre texto público — não uma recomendação de empresa ou vaga.',
     scoringJob:
-      'O radar acompanha quatro áreas de foco. Engenharia React e Cloud & Ops são pontuadas em pé de igualdade: Engenharia React favorece React, TypeScript, Node.js, GraphQL e React Native; Cloud & Ops favorece AWS, Kubernetes, Terraform, Docker, Azure e GCP. Anotação de Dados reúne vagas de treinamento de IA, rotulagem de dados e RLHF. Produto reúne vagas de product manager e product owner. As quatro favorecem títulos senior/staff, remoto e geografia Brasil/LATAM/Américas. Junior, apenas presencial, relocação obrigatória e stacks sem relação são fortemente penalizados.',
+      'O radar acompanha seis áreas de foco e abre em Engenharia Java. Engenharia Java tem pontuação própria: favorece Java, Spring, Kotlin, Hibernate/JPA, Quarkus e Micronaut, pontua júnior, pleno e sênior por igual, backend ou fullstack, favorece contratação como contractor ou PJ e penaliza vagas que exigem autorização de trabalho nos EUA (somente W2, somente cidadãos americanos). Engenharia React favorece React, TypeScript, Node.js, GraphQL e React Native; Cloud & Ops favorece AWS, Kubernetes, Terraform, Docker, Azure e GCP. Mobile reúne vagas de iOS e Android, Anotação de Dados reúne vagas de treinamento de IA, rotulagem de dados e RLHF, e Produto reúne vagas de product manager e product owner. Fora de Java, títulos senior/staff são favorecidos e vagas júnior são fortemente penalizadas. Todas as áreas favorecem remoto e geografia Brasil/LATAM/Américas, e penalizam vagas apenas presenciais, com relocação obrigatória ou com stacks sem relação.',
     scoringCompany:
       'A nota da empresa agrega vagas de engenharia ativas, rajadas recentes de publicações, matches de tech relevante e papéis de liderança — sempre a partir de listagens públicas.',
     applications:

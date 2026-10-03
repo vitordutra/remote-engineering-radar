@@ -2,7 +2,10 @@ import {
   classifyJob,
   type ClassifyJobInput,
 } from '../classification/classify-job';
-import { PLATFORM_ROLE_FOCUS } from '../classification/constants';
+import {
+  JAVA_ROLE_FOCUS,
+  PLATFORM_ROLE_FOCUS,
+} from '../classification/constants';
 import type { JobClassification } from '../classification/types';
 import {
   MAX_NORMALIZED_SCORE,
@@ -33,28 +36,11 @@ type ScoreSignal = {
   applies: (classification: JobClassification) => boolean;
 };
 
-/** Every non-technology signal, in the order its reason is reported. */
+const isOnJavaLane = (classification: JobClassification): boolean =>
+  classification.roleFocus.includes(JAVA_ROLE_FOCUS);
+
+/** Every non-technology, non-seniority signal, in the order it is reported. */
 const CLASSIFICATION_SIGNALS: readonly ScoreSignal[] = [
-  {
-    reason: 'Senior',
-    weight: SCORE_WEIGHTS.seniority.senior,
-    applies: (classification) => classification.seniority === 'senior',
-  },
-  {
-    reason: 'Staff',
-    weight: SCORE_WEIGHTS.seniority.staff,
-    applies: (classification) => classification.seniority === 'staff',
-  },
-  {
-    reason: 'Mid-level',
-    weight: SCORE_WEIGHTS.seniority.mid,
-    applies: (classification) => classification.seniority === 'mid',
-  },
-  {
-    reason: 'Junior',
-    weight: SCORE_WEIGHTS.seniority.junior,
-    applies: (classification) => classification.seniority === 'junior',
-  },
   {
     reason: 'Frontend',
     weight: SCORE_WEIGHTS.roleFocus.frontend,
@@ -64,6 +50,13 @@ const CLASSIFICATION_SIGNALS: readonly ScoreSignal[] = [
     reason: 'Fullstack',
     weight: SCORE_WEIGHTS.roleFocus.fullstack,
     applies: (classification) => classification.roleFocus.includes('fullstack'),
+  },
+  {
+    reason: 'Backend',
+    weight: SCORE_WEIGHTS.roleFocus.backend,
+    applies: (classification) =>
+      isOnJavaLane(classification) &&
+      classification.roleFocus.includes('backend'),
   },
   {
     reason: 'Platform',
@@ -102,6 +95,18 @@ const CLASSIFICATION_SIGNALS: readonly ScoreSignal[] = [
     applies: (classification) => classification.requiresRelocation,
   },
   {
+    reason: 'Contractor',
+    weight: SCORE_WEIGHTS.contractor,
+    applies: (classification) =>
+      isOnJavaLane(classification) && classification.isContractor,
+  },
+  {
+    reason: 'Work authorization required',
+    weight: SCORE_WEIGHTS.workAuthorizationRequired,
+    applies: (classification) =>
+      isOnJavaLane(classification) && classification.requiresWorkAuthorization,
+  },
+  {
     reason: 'Unrelated stack',
     weight: SCORE_WEIGHTS.unrelatedStack,
     applies: (classification) => classification.isUnrelatedStack,
@@ -113,23 +118,52 @@ const CLASSIFICATION_SIGNALS: readonly ScoreSignal[] = [
   },
 ];
 
+/**
+ * A lane with its own technology table. Any other job, on React or no lane,
+ * is paid by the React table.
+ */
+const LANE_TECHNOLOGY_WEIGHTS = [
+  [PLATFORM_ROLE_FOCUS, SCORE_WEIGHTS.cloudTechnologies],
+  [JAVA_ROLE_FOCUS, SCORE_WEIGHTS.javaTechnologies],
+] as const;
+
 const technologySignals = (
   classification: JobClassification,
 ): Omit<ScoreSignal, 'applies'>[] => {
-  const technologyWeights = classification.roleFocus.includes(
-    PLATFORM_ROLE_FOCUS,
-  )
-    ? SCORE_WEIGHTS.cloudTechnologies
-    : SCORE_WEIGHTS.technologies;
+  const technologyWeights: Readonly<Record<string, number>> =
+    LANE_TECHNOLOGY_WEIGHTS.find(([lane]) =>
+      classification.roleFocus.includes(lane),
+    )?.[1] ?? SCORE_WEIGHTS.technologies;
 
   return Object.entries(technologyWeights)
     .filter(([name]) => classification.technologies.includes(name))
     .map(([name, weight]) => ({ reason: name, weight }));
 };
 
+/** Principal has no reason: it is neither rewarded nor penalized. */
+const SENIORITY_REASONS = [
+  ['senior', 'Senior'],
+  ['staff', 'Staff'],
+  ['mid', 'Mid-level'],
+  ['junior', 'Junior'],
+] as const;
+
+const senioritySignals = (
+  classification: JobClassification,
+): Omit<ScoreSignal, 'applies'>[] => {
+  const seniorityWeights = isOnJavaLane(classification)
+    ? SCORE_WEIGHTS.javaSeniority
+    : SCORE_WEIGHTS.seniority;
+
+  return SENIORITY_REASONS.filter(
+    ([level]) => classification.seniority === level,
+  ).map(([level, reason]) => ({ reason, weight: seniorityWeights[level] }));
+};
+
 const scoreClassification = (classification: JobClassification): JobScore => {
   const signals = [
     ...technologySignals(classification),
+    ...senioritySignals(classification),
     ...CLASSIFICATION_SIGNALS.filter((signal) =>
       signal.applies(classification),
     ),

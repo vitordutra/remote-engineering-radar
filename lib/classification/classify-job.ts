@@ -187,5 +187,10 @@ export const classifyJob = (input: ClassifyJobInput): JobClassification => {
     isUnrelatedStack: isUnrelatedStack(roleFocus, technologies, haystack),
     isUnrelatedRole: isUnrelatedRole(title, roleFocus),
     requiresRelocation: matchesAny(VOCABULARY.relocation, haystack),
+    isContractor: matchesAny(VOCABULARY.contractor, haystack),
+    requiresWorkAuthorization: matchesAny(
+      VOCABULARY.workAuthorization,
+      haystack,
+    ),
   };
 };

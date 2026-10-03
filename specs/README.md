@@ -50,6 +50,8 @@ Open:
 - [SPEC-024](024-ats-board-discovery.md) — ATS board discovery (versioned seed boards,
   per-board failure isolation, automatic discovery in the ingest, direct board wins
   over the aggregator)
+- [SPEC-025](025-java-lane.md) — Java lane (fork-only: Junior, Mid-level, and
+  Senior Java roles, backend or fullstack, as the default focus)
 
 ---
 

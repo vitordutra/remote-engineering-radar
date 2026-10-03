@@ -25,13 +25,24 @@ export const EN_VOCABULARY: ClassificationVocabulary = {
     staff: [/\bstaff\b/i],
     senior: [/\bsenior\b|\bsr\.?\b/i],
   },
+  /**
+   * US postings name a level instead of saying "junior": "Software Engineer
+   * I", "Associate Engineer", "New Grad". In a body these words describe
+   * someone else ("associate with", "mentor new grads").
+   */
   seniorityTitle: {
-    junior: [],
-    mid: [],
+    junior: [
+      /\bjr\b/i,
+      /\bassociate\s+(?:software\s+)?(?:engineer|developer)\b/i,
+      /\b(?:engineer|developer)\s+i\b/i,
+      /\bnew[-\s]grad(?:uate)?s?\b/i,
+      /\bearly[-\s]career\b/i,
+    ],
+    mid: [/\b(?:engineer|developer)\s+ii\b/i],
     // Bodies say "principal responsibilities"; only a title names the level.
     principal: [/\bprincipal\b/i],
     staff: [],
-    senior: [],
+    senior: [/\b(?:engineer|developer)\s+iii\b/i],
   },
   roleFocus: {
     frontend: [/\bfront[-\s]?end\b|\bfrontend\b/i],
@@ -121,6 +132,18 @@ export const EN_VOCABULARY: ClassificationVocabulary = {
     /\bcomputer\s+science\b|\bprogramming\b/i,
   ],
   relocation: [/\brelocati(on|e)\b/i],
+  // "No C2C" says the opposite, and a bare "B2B" is a market, not a contract.
+  contractor: [
+    /\bcontractors?\b/i,
+    /\b1099\b/i,
+    /(?<!\bno\s)\bc2c\b/i,
+    /\bb2b\s+contract\b/i,
+  ],
+  workAuthorization: [
+    /\bw-?2\s+only\b/i,
+    /\bauthorized\s+to\s+work\s+in\s+the\s+(?:us\b|u\.s\.|united\s+states\b)/i,
+    /\b(?:us|u\.s\.)\s+citizens?\s+only\b/i,
+  ],
   geography: {
     brazil: [/\bbrazil\b/i],
     latam: [/\blatam\b|\blatin america\b|\bsouth america\b/i],

@@ -13,7 +13,7 @@ describe('jobs page copy', () => {
     for (const technology of FOCUS_TECHNOLOGIES) {
       expect(JOBS_PAGE_COPY.subtitle).toContain(technology);
     }
-    // A title past ~60 characters is truncated in results; it leads with React.
+    // A title past ~60 characters is truncated in results; it leads with Java.
     expect(JOBS_PAGE_COPY.metaTitle).toContain(FOCUS_TECHNOLOGIES[0]);
   });
 });

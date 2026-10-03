@@ -261,6 +261,69 @@ const PORTUGUESE_UNRELATED_ROLE_TITLES = [
   'Recrutadora Tech',
   'Analista de Sucesso do Cliente',
 ];
+const TITLE_SENIORITY_CASES = [
+  { title: 'Software Engineer I', seniority: 'junior' },
+  { title: 'Associate Software Engineer', seniority: 'junior' },
+  { title: 'Software Engineer, New Grad', seniority: 'junior' },
+  { title: 'Early Career Software Engineer', seniority: 'junior' },
+  { title: 'Trainee Desenvolvimento Java', seniority: 'junior' },
+  { title: 'Desenvolvedor Java Jr', seniority: 'junior' },
+  { title: 'Desenvolvedora Java Jr.', seniority: 'junior' },
+  { title: 'Desenvolvedora Java Plena', seniority: 'mid' },
+  { title: 'Software Engineer II', seniority: 'mid' },
+  { title: 'Backend Developer II', seniority: 'mid' },
+  { title: 'Software Engineer III', seniority: 'senior' },
+] as const;
+const UNLEVELED_TITLES = [
+  'Software Engineer in Test',
+  'Associate Director of Engineering',
+];
+const JAVA_DEVELOPER_TITLE = 'Java Developer';
+const CONTRACTOR_POSTINGS = [
+  { title: 'Junior Java Developer (Contractor)' },
+  {
+    title: JAVA_DEVELOPER_TITLE,
+    description: 'This is an independent contractor engagement.',
+  },
+  { title: JAVA_DEVELOPER_TITLE, description: 'Paid as a 1099 role.' },
+  { title: JAVA_DEVELOPER_TITLE, description: 'C2C or W2 accepted.' },
+  { title: JAVA_DEVELOPER_TITLE, description: 'Long-term B2B contract.' },
+  { title: 'Desenvolvedor Java Pleno', description: 'Contratação PJ.' },
+];
+const NON_CONTRACTOR_POSTINGS = [
+  { title: JAVA_DEVELOPER_TITLE, description: 'Full-time W2 role. No C2C.' },
+  {
+    title: JAVA_DEVELOPER_TITLE,
+    description: 'We build B2B SaaS for logistics.',
+  },
+];
+const WORK_AUTHORIZATION_DESCRIPTIONS = [
+  'W2 only, no sponsorship.',
+  'Candidates must be authorized to work in the US.',
+  'Must be authorized to work in the U.S. without sponsorship.',
+  'US citizens only due to a federal contract.',
+  'Open to U.S. citizens only.',
+];
+const JAVA_ROLE_FOCUS = 'java';
+const JAVA_BACKEND_JOB = {
+  title: 'Senior Backend Engineer',
+  description:
+    'Java 17 services on Spring Boot with Hibernate, Quarkus, and Micronaut. Some Kotlin.',
+};
+const JAVA_TECHNOLOGIES = [
+  'Java',
+  'Spring',
+  'Hibernate',
+  'Quarkus',
+  'Micronaut',
+  'Kotlin',
+];
+const JAVA_INTERN_JOB = {
+  title: 'Java Intern',
+  description: JAVA_BACKEND_JOB.description,
+};
+const OPEN_TO_CONTRACTORS_DESCRIPTION =
+  'Open to contractors across LATAM. Paid in USD.';
 const QUAVE_ANNOTATION_TITLE = 'Senior Full-Stack Engineer';
 const QUAVE_ANNOTATION_DESCRIPTION =
   'Work with a US client developing AI training and evaluation data for coding agents. React, TypeScript, and Node.js.';
@@ -272,6 +335,50 @@ describe('classifyJob', () => {
       expect(classifyJob({ title }).seniority).toBe(seniority);
     },
   );
+
+  it.each(TITLE_SENIORITY_CASES)(
+    'reads $seniority from the level in the title $title',
+    ({ title, seniority }) => {
+      expect(classifyJob({ title }).seniority).toBe(seniority);
+    },
+  );
+
+  it.each(UNLEVELED_TITLES)('reads no seniority from %s', (title) => {
+    expect(classifyJob({ title }).seniority).toBeUndefined();
+  });
+
+  it.each(CONTRACTOR_POSTINGS)(
+    'reads a contractor engagement in $title / $description',
+    (input) => {
+      expect(classifyJob(input).isContractor).toBe(true);
+    },
+  );
+
+  it.each(NON_CONTRACTOR_POSTINGS)(
+    'reads no contractor engagement in $description',
+    (input) => {
+      expect(classifyJob(input).isContractor).toBe(false);
+    },
+  );
+
+  it.each(WORK_AUTHORIZATION_DESCRIPTIONS)(
+    'reads a US work-authorization requirement in %s',
+    (description) => {
+      expect(
+        classifyJob({ title: JAVA_DEVELOPER_TITLE, description })
+          .requiresWorkAuthorization,
+      ).toBe(true);
+    },
+  );
+
+  it('reads no work-authorization requirement in a posting open to contractors', () => {
+    expect(
+      classifyJob({
+        title: JAVA_DEVELOPER_TITLE,
+        description: OPEN_TO_CONTRACTORS_DESCRIPTION,
+      }).requiresWorkAuthorization,
+    ).toBe(false);
+  });
 
   it.each(BRAZIL_LOCATIONS)('recognizes Brazil in %s', (location) => {
     expect(
@@ -516,6 +623,24 @@ describe('classifyJob', () => {
 
     expect(result.roleFocus).not.toContain(PLATFORM_ROLE_FOCUS);
     expect(result.isUnrelatedStack).toBe(true);
+    expect(shouldPersistClassifiedJob(result)).toBe(false);
+  });
+
+  it('keeps a Java backend role on the Java track with its stack', () => {
+    const result = classifyJob(JAVA_BACKEND_JOB);
+
+    expect(result.roleFocus).toContain(JAVA_ROLE_FOCUS);
+    expect(result.technologies).toEqual(
+      expect.arrayContaining(JAVA_TECHNOLOGIES),
+    );
+    expect(result.isUnrelatedStack).toBe(false);
+    expect(shouldPersistClassifiedJob(result)).toBe(true);
+  });
+
+  it('does not persist a Java internship', () => {
+    const result = classifyJob(JAVA_INTERN_JOB);
+
+    expect(result.roleFocus).not.toContain(JAVA_ROLE_FOCUS);
     expect(shouldPersistClassifiedJob(result)).toBe(false);
   });
 

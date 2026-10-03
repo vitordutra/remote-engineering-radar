@@ -4,7 +4,12 @@ import { fireEvent, render, screen, within } from '@testing-library/react';
 import type { ReactElement, ReactNode } from 'react';
 import {
   JOB_COUNTRY_FILTER_OPTIONS,
+  JOB_FOCUS_ALL,
   JOB_FOCUS_CLOUD_OPS,
+  JOB_FOCUS_DATA_ANNOTATION,
+  JOB_FOCUS_ENGINEERING,
+  JOB_FOCUS_JAVA,
+  JOB_FOCUS_MOBILE,
   JOB_FOCUS_PRODUCT,
 } from '@/lib/jobs/constants';
 import { formatUpdatedLabel } from '@/lib/report/format';
@@ -47,6 +52,15 @@ const COUNTRY_TABS = [
   })),
 ];
 const UNKNOWN_COUNTRIES = ['atlantis', 'unknown-country'];
+const FOCUS_TAB_LABELS = [
+  EN_MESSAGES.focus[JOB_FOCUS_JAVA],
+  EN_MESSAGES.jobs.focusAll,
+  EN_MESSAGES.focus[JOB_FOCUS_ENGINEERING],
+  EN_MESSAGES.focus[JOB_FOCUS_CLOUD_OPS],
+  EN_MESSAGES.focus[JOB_FOCUS_MOBILE],
+  EN_MESSAGES.focus[JOB_FOCUS_DATA_ANNOTATION],
+  EN_MESSAGES.focus[JOB_FOCUS_PRODUCT],
+];
 const UPDATED_AT = new Date('2026-09-01T12:00:00Z');
 
 describe('home report copy', () => {
@@ -128,6 +142,7 @@ describe('home country tabs', () => {
     vi.mocked(getCompaniesPageData).mockResolvedValueOnce({
       companies: [],
       country: undefined,
+      focus: JOB_FOCUS_JAVA,
       updatedAt: null,
     });
     const page = Home({ searchParams: Promise.resolve({}) });
@@ -162,6 +177,7 @@ describe('home country tabs', () => {
     }
     expect(getCompaniesPageData).toHaveBeenLastCalledWith({
       country: undefined,
+      focus: JOB_FOCUS_JAVA,
     });
   });
 
@@ -171,6 +187,7 @@ describe('home country tabs', () => {
       vi.mocked(getCompaniesPageData).mockResolvedValue({
         companies: [],
         country,
+        focus: JOB_FOCUS_JAVA,
         updatedAt: null,
       });
 
@@ -216,6 +233,37 @@ describe('home country tabs', () => {
 });
 
 describe('home focus tabs', () => {
+  it('opens on the Java track, listed first and followed by all roles', async () => {
+    vi.mocked(getCompaniesPageData).mockResolvedValue({
+      companies: [],
+      focus: JOB_FOCUS_JAVA,
+      updatedAt: null,
+    });
+
+    render(
+      await resolvePageSection(Home({ searchParams: Promise.resolve({}) })),
+    );
+
+    const focusNav = within(
+      screen.getByRole('navigation', { name: EN_MESSAGES.jobs.focusLabel }),
+    );
+    expect(getCompaniesPageData).toHaveBeenLastCalledWith({
+      country: undefined,
+      focus: JOB_FOCUS_JAVA,
+    });
+    expect(
+      focusNav.getAllByRole('link').map((link) => link.textContent),
+    ).toStrictEqual(FOCUS_TAB_LABELS);
+    const java = focusNav.getByRole('link', {
+      name: EN_MESSAGES.focus[JOB_FOCUS_JAVA],
+    });
+    expect(java).toHaveAttribute('href', '/');
+    expect(java).toHaveClass('font-semibold');
+    expect(
+      focusNav.getByRole('link', { name: EN_MESSAGES.jobs.focusAll }),
+    ).toHaveAttribute('href', `/?focus=${JOB_FOCUS_ALL}`);
+  });
+
   it('reads the selected focus track and keeps country and focus across tab links', async () => {
     const [brazil, chile] = JOB_COUNTRY_FILTER_OPTIONS;
     vi.mocked(getCompaniesPageData).mockResolvedValue({
@@ -263,7 +311,10 @@ describe('home focus tabs', () => {
     );
     expect(
       focusNav.getByRole('link', { name: EN_MESSAGES.jobs.focusAll }),
-    ).toHaveAttribute('href', `/?country=${brazil.slug}`);
+    ).toHaveAttribute(
+      'href',
+      `/?country=${brazil.slug}&focus=${JOB_FOCUS_ALL}`,
+    );
     expect(countryNav.getByRole('link', { name: chile.label })).toHaveAttribute(
       'href',
       `/?country=${chile.slug}&focus=${JOB_FOCUS_CLOUD_OPS}`,
@@ -291,36 +342,43 @@ describe('home focus tabs', () => {
 });
 
 describe('home company job previews', () => {
-  it('links a company preview to all of its jobs under the same country and focus', () => {
-    const [brazil] = JOB_COUNTRY_FILTER_OPTIONS;
-    render(
-      <CompaniesReport
-        data={{
-          companies: [
-            {
-              ...TEST_REPORT_COMPANY,
-              jobs: [TEST_REPORT_JOB],
-              signalSourceUrls: [],
-            },
-          ],
-          country: brazil.slug,
-          focus: JOB_FOCUS_CLOUD_OPS,
-          updatedAt: null,
-        }}
-      />,
-    );
+  it.each([
+    { focus: JOB_FOCUS_CLOUD_OPS, query: `&focus=${JOB_FOCUS_CLOUD_OPS}` },
+    { focus: JOB_FOCUS_JAVA, query: '' },
+    { focus: undefined, query: `&focus=${JOB_FOCUS_ALL}` },
+  ])(
+    'links a company preview under focus $focus to all of its jobs under the same country and focus',
+    ({ focus, query }) => {
+      const [brazil] = JOB_COUNTRY_FILTER_OPTIONS;
+      render(
+        <CompaniesReport
+          data={{
+            companies: [
+              {
+                ...TEST_REPORT_COMPANY,
+                jobs: [TEST_REPORT_JOB],
+                signalSourceUrls: [],
+              },
+            ],
+            country: brazil.slug,
+            focus,
+            updatedAt: null,
+          }}
+        />,
+      );
 
-    expect(
-      screen.getByRole('link', {
-        name: EN_MESSAGES.home.seeAllJobs(
-          TEST_REPORT_COMPANY.openEngineeringJobs,
-        ),
-      }),
-    ).toHaveAttribute(
-      'href',
-      `/jobs?company=${TEST_REPORT_COMPANY.slug}&country=${brazil.slug}&focus=${JOB_FOCUS_CLOUD_OPS}`,
-    );
-  });
+      expect(
+        screen.getByRole('link', {
+          name: EN_MESSAGES.home.seeAllJobs(
+            TEST_REPORT_COMPANY.openEngineeringJobs,
+          ),
+        }),
+      ).toHaveAttribute(
+        'href',
+        `/jobs?company=${TEST_REPORT_COMPANY.slug}&country=${brazil.slug}${query}`,
+      );
+    },
+  );
 });
 
 describe('Home cache boundary', () => {
@@ -352,7 +410,7 @@ describe('Home cache boundary', () => {
 
     expect(vi.mocked(getCompaniesPageData).mock.calls).toStrictEqual(
       Array.from({ length: 6 }, () => [
-        { country: undefined, focus: undefined },
+        { country: undefined, focus: JOB_FOCUS_JAVA },
       ]),
     );
   });
@@ -368,6 +426,7 @@ describe('Home cache boundary', () => {
 
       expect(getCompaniesPageData).toHaveBeenCalledExactlyOnceWith({
         country: slug,
+        focus: JOB_FOCUS_JAVA,
       });
     },
   );
@@ -395,8 +454,8 @@ describe('Home cache boundary', () => {
       screen.getByText(formatUpdatedLabel(UPDATED_AT)),
     ).toBeInTheDocument();
     expect(vi.mocked(getCompaniesPageData).mock.calls).toStrictEqual([
-      [{ country: country.slug, focus: undefined }],
-      [{ country: country.slug, focus: undefined }],
+      [{ country: country.slug, focus: JOB_FOCUS_JAVA }],
+      [{ country: country.slug, focus: JOB_FOCUS_JAVA }],
     ]);
   });
 
@@ -411,7 +470,10 @@ describe('Home cache boundary', () => {
       alternates: { canonical: `/?country=${country}` },
       robots: { index: false, follow: true },
     });
-    expect(getCompaniesPageData).toHaveBeenCalledExactlyOnceWith({ country });
+    expect(getCompaniesPageData).toHaveBeenCalledExactlyOnceWith({
+      country,
+      focus: JOB_FOCUS_JAVA,
+    });
     const error = new Error(TEST_REPORT_ERROR_MESSAGE);
     vi.mocked(getCompaniesPageData).mockRejectedValueOnce(error);
     await expect(

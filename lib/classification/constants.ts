@@ -1,8 +1,9 @@
 /**
- * One vocabulary, two kinds. `focus` names decide React-track relevance;
- * `cloud` names are displayed and filterable but must never make a job
- * relevant on their own, because almost every competing-stack job mentions
- * Docker or AWS in passing.
+ * One vocabulary, three kinds. `focus` names decide React-track relevance;
+ * `cloud` and `java` names are displayed and filterable but must never make a
+ * job relevant on their own: almost every competing-stack job mentions Docker
+ * or AWS in passing, and a Java data-engineering job is still off-track. The
+ * Java lane decides Java relevance.
  */
 export const TECHNOLOGY_PATTERNS = [
   { name: 'React Native', kind: 'focus', pattern: /\breact\s*native\b/i },
@@ -29,6 +30,12 @@ export const TECHNOLOGY_PATTERNS = [
   { name: 'Azure', kind: 'cloud', pattern: /\bazure\b/i },
   { name: 'GCP', kind: 'cloud', pattern: /\bgcp\b|\bgoogle cloud\b/i },
   { name: 'Ansible', kind: 'cloud', pattern: /\bansible\b/i },
+  { name: 'Java', kind: 'java', pattern: /\bjava\b/i },
+  { name: 'Spring', kind: 'java', pattern: /\bspring\b/i },
+  { name: 'Kotlin', kind: 'java', pattern: /\bkotlin\b/i },
+  { name: 'Hibernate', kind: 'java', pattern: /\bhibernate\b|\bjpa\b/i },
+  { name: 'Quarkus', kind: 'java', pattern: /\bquarkus\b/i },
+  { name: 'Micronaut', kind: 'java', pattern: /\bmicronaut\b/i },
 ] as const;
 
 export const TECHNOLOGY_NAMES = TECHNOLOGY_PATTERNS.map((entry) => entry.name);
@@ -41,6 +48,8 @@ const namesOfKind = (kind: (typeof TECHNOLOGY_PATTERNS)[number]['kind']) =>
 export const FOCUS_TECHNOLOGY_NAMES = namesOfKind('focus');
 
 export const CLOUD_TECHNOLOGY_NAMES = namesOfKind('cloud');
+
+export const JAVA_TECHNOLOGY_NAMES = namesOfKind('java');
 
 /**
  * Only focus names count. Adding cloud names here would short-circuit
@@ -82,6 +91,9 @@ export const REACT_ROLE_FOCUS = 'react' as const;
 
 /** The role-focus value that marks the Mobile track. */
 export const MOBILE_ROLE_FOCUS = 'mobile' as const;
+
+/** The role-focus value that marks the Java Engineering track. */
+export const JAVA_ROLE_FOCUS = 'java' as const;
 
 export const UNRELATED_STACK_PATTERNS = [
   /\bdata engineer(?:ing)?\b|\betl\b|\bspark\b|\bairflow\b/i,

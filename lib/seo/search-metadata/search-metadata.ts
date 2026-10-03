@@ -1,6 +1,7 @@
 import 'server-only';
 import type { Metadata } from 'next';
 import { messagesFor, type Locale } from '@/lib/i18n/messages';
+import { JOB_FOCUS_ALL } from '@/lib/jobs/constants';
 import { canonicalMetadata } from '../canonical-metadata/canonical-metadata';
 import { MIN_INDEXABLE_JOBS } from '../constants';
 import { filterJobCount } from '../filter-job-count';
@@ -38,6 +39,14 @@ const filterCopy = (
           description: seo.countryJobsDescription(place),
         };
   }
+  if (filter.focus === JOB_FOCUS_ALL) {
+    return view === 'companies'
+      ? {
+          title: seo.allCompaniesTitle,
+          description: seo.allCompaniesDescription,
+        }
+      : { title: seo.allJobsTitle, description: seo.allJobsDescription };
+  }
   const track = tracks[filter.focus];
   return view === 'companies'
     ? {
@@ -52,8 +61,9 @@ const filterCopy = (
 
 /**
  * Title, description, canonical, language alternates, and robots for a
- * report view. The unfiltered view and single country or focus views with
- * enough jobs are indexed; every other combination is noindex.
+ * report view. `filters` are query-string values, so the default Java track
+ * is no `focus` at all. The unfiltered view and single country or focus views
+ * with enough jobs are indexed; every other combination is noindex.
  */
 export const searchMetadata = async (
   view: SearchView,

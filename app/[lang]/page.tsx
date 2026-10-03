@@ -6,6 +6,7 @@ import { routeLocale } from '@/lib/i18n/route-locale/route-locale';
 import { searchMetadata } from '@/lib/seo/search-metadata/search-metadata';
 import { parseCountryFilter } from '@/lib/report/parse-country-filter';
 import { parseFocusFilter } from '@/lib/report/parse-focus-filter';
+import { focusSearchValue } from '@/lib/report/focus-search-value/focus-search-value';
 import { ReportLoading } from '@/components/report/ReportLoading/ReportLoading';
 import { CompaniesReport, HomeHeading } from './home-presentation';
 
@@ -32,7 +33,7 @@ export const generateMetadata = async ({
   return searchMetadata(
     'companies',
     '/',
-    { country, focus },
+    { country, focus: focusSearchValue(focus) },
     await routeLocale(params),
   );
 };
