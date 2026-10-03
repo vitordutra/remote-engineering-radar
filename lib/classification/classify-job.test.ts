@@ -269,6 +269,7 @@ const TITLE_SENIORITY_CASES = [
   { title: 'Trainee Desenvolvimento Java', seniority: 'junior' },
   { title: 'Desenvolvedor Java Jr', seniority: 'junior' },
   { title: 'Desenvolvedora Java Jr.', seniority: 'junior' },
+  { title: 'Desenvolvedora Java Plena', seniority: 'mid' },
   { title: 'Software Engineer II', seniority: 'mid' },
   { title: 'Backend Developer II', seniority: 'mid' },
   { title: 'Software Engineer III', seniority: 'senior' },

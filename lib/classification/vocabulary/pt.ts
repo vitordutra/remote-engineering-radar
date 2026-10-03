@@ -41,7 +41,7 @@ export const PT_VOCABULARY: ClassificationVocabulary = {
   // A trainee program is a full-time entry-level job, not an internship.
   seniorityTitle: {
     junior: [/\bestagi(?:o|ari[oa])\b/i, /\btrainee\b/i],
-    mid: [/\bpleno\b/i],
+    mid: [/\bplen[oa]\b/i],
     principal: [],
     staff: [],
     senior: [],
