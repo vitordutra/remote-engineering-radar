@@ -180,13 +180,22 @@ Now the title is read first, with both seniority vocabularies; the body is read
 only when the title names no level. This applies to every lane. The
 `026-title-first-seniority` data migration reclassifies active jobs once.
 
+## Follow-up: contract titles
+
+US contractor postings say "Junior Java Developer (Contract)", "6 Month
+Contract", or "Contract-to-Hire" and none of the contractor terms. "Contract"
+now counts as a contractor engagement in the title only, never after "Smart":
+a body says "contract terms" or "employment contract" on any job. The
+`027-contract-title` data migration reclassifies active jobs once.
+
 ## Debt
 
 - A title with no level still takes the body's most junior mention: an
   unlabeled "Java Developer" that mentions mentoring juniors is junior.
 - A generic-title Android posting whose body names Kotlin + Gradle + JUnit and
   never says Android in the title can land on Java.
-- "(Contract)" in a title is not a contractor signal; only the listed terms are.
+- A body that says "6-month contract" without a contractor term is not a
+  contractor signal; only the title's "contract" is.
 - Upstream's `\b\.net\b` (React vetoes, unrelated stacks) misses " .NET" after
   a space; the Java vetoes use a pattern that does not.
 - `backend-br/vagas` as a source is a separate spec.

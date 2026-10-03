@@ -93,6 +93,8 @@ export const PT_VOCABULARY: ClassificationVocabulary = {
   relocation: [/\b(?:realocacao|relocacao)\b/i],
   // Pessoa Jurídica: invoicing as a company, the Brazilian contractor model.
   contractor: [/\bpj\b/i],
+  // "Contrato temporário" is a fixed-term employee, not a contractor.
+  contractorTitle: [],
   workAuthorization: [],
   geography: {
     brazil: [/\bbrasil\b/i, /\bsao paulo\b/i],

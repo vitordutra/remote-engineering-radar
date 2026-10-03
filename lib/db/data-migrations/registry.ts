@@ -1,6 +1,7 @@
 import { dropLegacyGeographyCountries } from '@/lib/ingestion/drop-legacy-geography-countries';
 import { reclassifyActiveJobs } from '@/lib/ingestion/reclassify-active-jobs';
 import {
+  CONTRACT_TITLE_DATA_MIGRATION,
   JAVA_LANE_DATA_MIGRATION,
   LANE_RULES_DATA_MIGRATION,
   LANE_STRATEGIES_DATA_MIGRATION,
@@ -41,6 +42,12 @@ export const DATA_MIGRATIONS: readonly DataMigration[] = [
   },
   {
     name: TITLE_FIRST_SENIORITY_DATA_MIGRATION,
+    up: async (db) => {
+      await reclassifyActiveJobs(db);
+    },
+  },
+  {
+    name: CONTRACT_TITLE_DATA_MIGRATION,
     up: async (db) => {
       await reclassifyActiveJobs(db);
     },

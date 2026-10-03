@@ -50,6 +50,11 @@ export type ClassificationVocabulary = {
   relocation: Patterns;
   /** An engagement as a contractor rather than an employee. */
   contractor: Patterns;
+  /**
+   * Matched against the title alone: "(Contract)" names the engagement, but a
+   * body says "contract terms" and "employment contract" on any job.
+   */
+  contractorTitle: Patterns;
   /** A requirement only a US worker can meet: W2 only, US citizens only. */
   workAuthorization: Patterns;
   geography: Record<'brazil' | 'latam' | 'americas' | 'worldwide', Patterns>;

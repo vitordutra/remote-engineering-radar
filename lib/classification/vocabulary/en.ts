@@ -139,6 +139,8 @@ export const EN_VOCABULARY: ClassificationVocabulary = {
     /(?<!\bno\s)\bc2c\b/i,
     /\bb2b\s+contract\b/i,
   ],
+  // "Smart Contract Engineer" writes contracts; it is not one.
+  contractorTitle: [/(?<!\bsmart[\s-])\bcontract\b/i],
   workAuthorization: [
     /\bw-?2\s+only\b/i,
     /\bauthorized\s+to\s+work\s+in\s+the\s+(?:us\b|u\.s\.|united\s+states\b)/i,

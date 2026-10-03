@@ -6,7 +6,9 @@ import { createCompaniesRepository } from '@/lib/db/repositories/companies-repos
 import { createJobsRepository } from '@/lib/db/repositories/jobs-repository';
 import { TEST_COMPANY, TEST_JOB } from '@/lib/db/repositories/test-fixtures';
 import { createTestDb } from '@/lib/db/test/create-test-db';
+import { SCORE_WEIGHTS } from '@/lib/scoring/constants';
 import {
+  CONTRACT_TITLE_DATA_MIGRATION,
   JAVA_LANE_DATA_MIGRATION,
   LANE_STRATEGIES_DATA_MIGRATION,
   TITLE_FIRST_SENIORITY_DATA_MIGRATION,
@@ -41,6 +43,20 @@ const STORED_JOB_BACKFILLS = [
     expected: { seniority: 'senior' },
   },
 ];
+
+/** One posting, with and without "(Contract)" in its title. */
+const CONTRACT_TITLE_TWINS = [
+  {
+    sourceJobId: 'java-contract',
+    title: 'Junior Java Developer (Contract)',
+    description: 'Java and Spring.',
+  },
+  {
+    sourceJobId: 'java-employee',
+    title: 'Junior Java Developer',
+    description: 'Java and Spring.',
+  },
+] as const;
 
 describe('runPendingDataMigrations', () => {
   it('registers the lane-strategies backfill that ships with the classifier', () => {
@@ -101,4 +117,36 @@ describe('runPendingDataMigrations', () => {
       await expect(runPendingDataMigrations(db, backfill)).resolves.toEqual([]);
     },
   );
+
+  it('pays a stored contract-titled Java job its contractor weight once', async () => {
+    const db = await createTestDb();
+    const company = await createCompaniesRepository(db).create(TEST_COMPANY);
+    const jobsRepository = createJobsRepository(db);
+    const [contractTwin, employeeTwin] = CONTRACT_TITLE_TWINS;
+    const contract = await jobsRepository.create({
+      ...TEST_JOB,
+      ...contractTwin,
+      companyId: company.id,
+      technologies: [...TEST_JOB.technologies],
+    });
+    const employee = await jobsRepository.create({
+      ...TEST_JOB,
+      ...employeeTwin,
+      companyId: company.id,
+      technologies: [...TEST_JOB.technologies],
+    });
+    const backfill = DATA_MIGRATIONS.filter(
+      (registered) => registered.name === CONTRACT_TITLE_DATA_MIGRATION,
+    );
+    const scoreOf = async (id: string) =>
+      (await db.job.findUniqueOrThrow({ where: { id } })).score;
+
+    await expect(runPendingDataMigrations(db, backfill)).resolves.toEqual([
+      CONTRACT_TITLE_DATA_MIGRATION,
+    ]);
+    expect((await scoreOf(contract.id)) - (await scoreOf(employee.id))).toBe(
+      SCORE_WEIGHTS.contractor,
+    );
+    await expect(runPendingDataMigrations(db, backfill)).resolves.toEqual([]);
+  });
 });
