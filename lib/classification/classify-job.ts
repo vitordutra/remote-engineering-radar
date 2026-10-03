@@ -6,7 +6,7 @@ import {
   UNRELATED_STACK_PATTERNS,
 } from './constants';
 import { LANE_ROLE_FOCUS_VALUES, laneRoleFocus } from './lanes/lane-strategies';
-import type { JobClassification, JobRemotePolicy } from './types';
+import type { JobClassification, JobRemotePolicy, JobSeniority } from './types';
 import { VOCABULARY } from './vocabulary/vocabulary';
 
 export type ClassifyJobInput = {
@@ -34,15 +34,27 @@ const SENIORITY_ORDER = [
   'senior',
 ] as const;
 
+const firstLevel = (
+  patterns: (level: JobSeniority) => readonly RegExp[],
+  text: string,
+): JobSeniority | undefined =>
+  SENIORITY_ORDER.find((level) => matchesAny(patterns(level), text));
+
+/**
+ * The title names the job's own level; a body also names the people around
+ * it ("mentor junior engineers"), so it is read only when the title is silent.
+ */
 const classifySeniority = (
   title: string,
   haystack: string,
 ): JobClassification['seniority'] =>
-  SENIORITY_ORDER.find(
-    (level) =>
-      matchesAny(VOCABULARY.seniority[level], haystack) ||
-      matchesAny(VOCABULARY.seniorityTitle[level], title),
-  );
+  firstLevel(
+    (level) => [
+      ...VOCABULARY.seniority[level],
+      ...VOCABULARY.seniorityTitle[level],
+    ],
+    title,
+  ) ?? firstLevel((level) => VOCABULARY.seniority[level], haystack);
 
 /** Title and location name the work model; the most permissive wins. */
 const TITLE_POLICY_ORDER = ['remote', 'hybrid', 'onsite'] as const;

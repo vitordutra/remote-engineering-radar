@@ -5,6 +5,7 @@ import {
   LANE_RULES_DATA_MIGRATION,
   LANE_STRATEGIES_DATA_MIGRATION,
   LEGACY_GEOGRAPHY_COUNTRIES_DATA_MIGRATION,
+  TITLE_FIRST_SENIORITY_DATA_MIGRATION,
 } from './constants';
 import type { DataMigration } from './types';
 
@@ -34,6 +35,12 @@ export const DATA_MIGRATIONS: readonly DataMigration[] = [
   },
   {
     name: JAVA_LANE_DATA_MIGRATION,
+    up: async (db) => {
+      await reclassifyActiveJobs(db);
+    },
+  },
+  {
+    name: TITLE_FIRST_SENIORITY_DATA_MIGRATION,
     up: async (db) => {
       await reclassifyActiveJobs(db);
     },

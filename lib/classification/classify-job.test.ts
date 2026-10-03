@@ -274,6 +274,29 @@ const TITLE_SENIORITY_CASES = [
   { title: 'Backend Developer II', seniority: 'mid' },
   { title: 'Software Engineer III', seniority: 'senior' },
 ] as const;
+/** A posting that names its own level and someone else's. */
+const TITLE_OVER_BODY_SENIORITY_CASES = [
+  {
+    title: 'Desenvolvedora Backend Plena',
+    description: 'Apoiar desenvolvedores Júnior no dia a dia.',
+    seniority: 'mid',
+  },
+  {
+    title: 'Senior React Engineer',
+    description: 'You will mentor junior engineers and run our internship.',
+    seniority: 'senior',
+  },
+  {
+    title: 'Junior Java Developer',
+    description: 'You will pair with a senior engineer every day.',
+    seniority: 'junior',
+  },
+] as const;
+const BODY_ONLY_SENIORITY_CASE = {
+  title: 'Java Developer',
+  description: 'A mid-level role on our payments team.',
+  seniority: 'mid',
+} as const;
 const UNLEVELED_TITLES = [
   'Software Engineer in Test',
   'Associate Director of Engineering',
@@ -342,6 +365,19 @@ describe('classifyJob', () => {
       expect(classifyJob({ title }).seniority).toBe(seniority);
     },
   );
+
+  it.each(TITLE_OVER_BODY_SENIORITY_CASES)(
+    'reads $seniority from the title $title over the body',
+    ({ title, description, seniority }) => {
+      expect(classifyJob({ title, description }).seniority).toBe(seniority);
+    },
+  );
+
+  it('reads the level from the body when the title names none', () => {
+    const { title, description, seniority } = BODY_ONLY_SENIORITY_CASE;
+
+    expect(classifyJob({ title, description }).seniority).toBe(seniority);
+  });
 
   it.each(UNLEVELED_TITLES)('reads no seniority from %s', (title) => {
     expect(classifyJob({ title }).seniority).toBeUndefined();
