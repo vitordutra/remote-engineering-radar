@@ -4,8 +4,32 @@ import { HIRING_SIGNAL_TYPES } from './constants';
 const daysAgo = (days: number, now = new Date()) =>
   new Date(now.getTime() - days * 24 * 60 * 60 * 1000);
 
+const COMPANY_NAME = 'Acme';
+const JAVA_JOBS = [
+  { title: 'Desenvolvedor Java Pleno', technologies: ['Java', 'Spring'] },
+  { title: 'Junior Java Developer', technologies: ['Java'] },
+];
+const JAVA_CLUSTER_DESCRIPTION = '2 open roles involve relevant technologies.';
+
 describe('detectHiringSignals', () => {
   const now = new Date('2026-08-26T12:00:00Z');
+
+  it('detects a technology cluster among Java roles', () => {
+    const result = detectHiringSignals({
+      companyName: COMPANY_NAME,
+      now,
+      jobs: JAVA_JOBS,
+    });
+
+    expect(result.signals).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          type: HIRING_SIGNAL_TYPES.RELEVANT_TECHNOLOGY_CLUSTER,
+          description: JAVA_CLUSTER_DESCRIPTION,
+        }),
+      ]),
+    );
+  });
 
   it('detects multiple engineering openings', () => {
     const jobs = Array.from({ length: 7 }, (_, index) => ({

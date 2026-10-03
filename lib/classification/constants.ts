@@ -49,6 +49,8 @@ export const FOCUS_TECHNOLOGY_NAMES = namesOfKind('focus');
 
 export const CLOUD_TECHNOLOGY_NAMES = namesOfKind('cloud');
 
+export const JAVA_TECHNOLOGY_NAMES = namesOfKind('java');
+
 /**
  * Only focus names count. Adding cloud names here would short-circuit
  * `isUnrelatedStack` for every Java, Go or .NET job that mentions Docker.

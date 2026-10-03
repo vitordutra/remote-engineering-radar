@@ -1,3 +1,4 @@
+import { JAVA_TECHNOLOGY_NAMES } from '@/lib/classification/constants';
 import {
   HIRING_SIGNAL_TYPES,
   MULTIPLE_OPENINGS_THRESHOLD,
@@ -11,12 +12,14 @@ import type {
   HiringSignalJobInput,
 } from './detect-types';
 
-const RELEVANT_TECHS = new Set([
+/** The React and Java stacks: the tracks the radar ranks by technology. */
+const RELEVANT_TECHS: ReadonlySet<string> = new Set([
   'React',
   'TypeScript',
   'Node.js',
   'GraphQL',
   'React Native',
+  ...JAVA_TECHNOLOGY_NAMES,
 ]);
 
 const isEngineeringJob = (job: HiringSignalJobInput): boolean => {
@@ -106,7 +109,7 @@ export const detectHiringSignals = (input: {
   if (relevantTechJobs.length >= RELEVANT_TECH_JOB_THRESHOLD) {
     signals.push({
       type: HIRING_SIGNAL_TYPES.RELEVANT_TECHNOLOGY_CLUSTER,
-      description: `${relevantTechJobs.length} open roles involve React/TypeScript/Node hiring.`,
+      description: `${relevantTechJobs.length} open roles involve relevant technologies.`,
       sourceUrl: evidenceUrl(relevantTechJobs),
       score: 15,
     });
