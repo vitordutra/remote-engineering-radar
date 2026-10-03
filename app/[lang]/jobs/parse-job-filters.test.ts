@@ -1,5 +1,8 @@
+import { JOB_FOCUS_ALL, JOB_FOCUS_JAVA } from '@/lib/jobs/constants';
 import { JOBS_PAGE_LIMIT } from './constants';
 import { parseJobFilters } from './parse-job-filters';
+
+const UNKNOWN_FOCUS = 'quantum-ops';
 
 describe('parseJobFilters', () => {
   it('collapses default remote and score-zero spellings into the unfiltered cache key', () => {
@@ -20,6 +23,7 @@ describe('parseJobFilters', () => {
       seniority: undefined,
       remote: undefined,
       location: undefined,
+      focus: JOB_FOCUS_JAVA,
       minimumScore: undefined,
       limit: JOBS_PAGE_LIMIT,
     });
@@ -43,14 +47,14 @@ describe('parseJobFilters', () => {
         seniority: 'wizard',
         remote: 'lunar',
         country: 'atlantis',
-        focus: 'quantum-ops',
+        focus: UNKNOWN_FOCUS,
       }),
     ).toEqual({
       technology: undefined,
       seniority: undefined,
       remote: undefined,
       country: undefined,
-      focus: undefined,
+      focus: JOB_FOCUS_JAVA,
       minimumScore: undefined,
       limit: JOBS_PAGE_LIMIT,
     });
@@ -71,6 +75,15 @@ describe('parseJobFilters', () => {
       remote: 'hybrid',
       country: 'brazil',
       focus: 'cloud-ops',
+    });
+  });
+
+  it('opens on the Java track and lifts the lane filter for all', () => {
+    expect(parseJobFilters({})).toMatchObject({ focus: JOB_FOCUS_JAVA });
+    expect(
+      parseJobFilters({ focus: ` ${JOB_FOCUS_ALL.toUpperCase()} ` }),
+    ).toMatchObject({
+      focus: undefined,
     });
   });
 

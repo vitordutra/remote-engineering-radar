@@ -2,7 +2,9 @@ import { EN_MESSAGES, type Locale } from '@/lib/i18n/messages';
 
 export const APP_NAME = EN_MESSAGES.app.name;
 
+/** What the copy must name for SEO visitors; the default Java track first. */
 export const FOCUS_TECHNOLOGIES = [
+  'Java',
   'React',
   'TypeScript',
   'Node.js',

@@ -2,6 +2,8 @@ import { EN_ROUTE_PARAMS, I18N_TEST, PT_ROUTE_PARAMS } from './i18n-fixtures';
 import { EN_MESSAGES, messagesFor } from '@/lib/i18n/messages';
 import {
   JOB_COUNTRY_FILTER_OPTIONS,
+  JOB_FOCUS_ALL,
+  JOB_FOCUS_JAVA,
   JOB_FOCUS_PRODUCT,
 } from '@/lib/jobs/constants';
 import { getCompaniesPageData } from '@/lib/report/get-companies-page-data';
@@ -21,6 +23,7 @@ vi.mock('@/lib/seo/filter-job-count', () => ({ filterJobCount: vi.fn() }));
 
 const [BRAZIL] = JOB_COUNTRY_FILTER_OPTIONS;
 const { seo, countries, focus } = EN_MESSAGES;
+const JAVA = 'Java';
 
 beforeEach(() => {
   vi.mocked(getCompaniesPageData).mockClear();
@@ -75,6 +78,71 @@ describe('search metadata', () => {
       robots: { index: true },
     });
     expect(filterJobCount).toHaveBeenCalledWith({ country: BRAZIL.slug });
+  });
+
+  it('titles a country view as the Java track in that country', async () => {
+    const companies = await homeMetadata({
+      params: EN_ROUTE_PARAMS,
+      searchParams: Promise.resolve({ country: BRAZIL.slug }),
+    });
+    const jobs = await jobsMetadata({
+      params: EN_ROUTE_PARAMS,
+      searchParams: Promise.resolve({ country: BRAZIL.slug }),
+    });
+
+    for (const metadata of [companies, jobs]) {
+      expect(metadata.title).toContain(JAVA);
+      expect(metadata.description).toContain(JAVA);
+    }
+  });
+
+  it('indexes all roles under its own title and canonical', async () => {
+    await expect(
+      jobsMetadata({
+        params: EN_ROUTE_PARAMS,
+        searchParams: Promise.resolve({ focus: JOB_FOCUS_ALL }),
+      }),
+    ).resolves.toMatchObject({
+      title: seo.allJobsTitle,
+      description: seo.allJobsDescription,
+      alternates: { canonical: `/jobs?focus=${JOB_FOCUS_ALL}` },
+      robots: { index: true },
+    });
+    await expect(
+      homeMetadata({
+        params: EN_ROUTE_PARAMS,
+        searchParams: Promise.resolve({ focus: JOB_FOCUS_ALL }),
+      }),
+    ).resolves.toMatchObject({
+      title: seo.allCompaniesTitle,
+      description: seo.allCompaniesDescription,
+      alternates: { canonical: `/?focus=${JOB_FOCUS_ALL}` },
+      robots: { index: true },
+    });
+    expect(filterJobCount).toHaveBeenCalledWith({ focus: JOB_FOCUS_ALL });
+  });
+
+  it('canonicalizes the Java track to the bare URL', async () => {
+    await expect(
+      jobsMetadata({
+        params: EN_ROUTE_PARAMS,
+        searchParams: Promise.resolve({ focus: JOB_FOCUS_JAVA }),
+      }),
+    ).resolves.toMatchObject({
+      title: EN_MESSAGES.jobs.metaTitle,
+      alternates: { canonical: '/jobs' },
+      robots: { index: true },
+    });
+    await expect(
+      homeMetadata({
+        params: EN_ROUTE_PARAMS,
+        searchParams: Promise.resolve({ focus: JOB_FOCUS_JAVA }),
+      }),
+    ).resolves.toMatchObject({
+      title: seo.homeTitle,
+      alternates: { canonical: '/' },
+      robots: { index: true },
+    });
   });
 
   it('indexes a single focus filter that has enough jobs, under its own title', async () => {

@@ -9,8 +9,10 @@ import { I18N_TEST, EN_ROUTE_PARAMS } from '../i18n-fixtures';
 import { TEST_JOB } from '@/lib/db/repositories/test-fixtures';
 import {
   JOB_COUNTRY_FILTER_OPTIONS,
+  JOB_FOCUS_ALL,
   JOB_FOCUS_CLOUD_OPS,
   JOB_FOCUS_DATA_ANNOTATION,
+  JOB_FOCUS_JAVA,
 } from '@/lib/jobs/constants';
 import { TEST_REPORT_ERROR_MESSAGE } from '@/lib/report/test-fixtures';
 import { resolvePageSection } from '@/test/render-helpers/resolve-page-section';
@@ -25,6 +27,7 @@ vi.mock('@/lib/report/get-jobs-page-data', () => ({
 }));
 
 const FILTERS = { country: 'brazil', seniority: 'senior' } as const;
+const FOCUS_FIELD = 'input[name="focus"]';
 
 afterEach(() => {
   document.cookie = `${LOCALE_COOKIE}=; path=/; max-age=0`;
@@ -87,10 +90,46 @@ describe('JobsPage', () => {
       ...FILTERS,
       technology: undefined,
       remote: undefined,
-      focus: undefined,
+      focus: JOB_FOCUS_JAVA,
       minimumScore: undefined,
       limit: JOBS_PAGE_LIMIT,
     });
+  });
+
+  it('opens on the Java track and leaves it out of links and the form', async () => {
+    const { container } = render(
+      await resolvePageSection(JobsPage({ searchParams: Promise.resolve({}) })),
+    );
+
+    const tracks = within(
+      screen.getByRole('navigation', { name: JOBS_PAGE_COPY.focusLabel }),
+    );
+    const java = tracks.getByRole('link', {
+      name: EN_MESSAGES.focus[JOB_FOCUS_JAVA],
+    });
+    expect(tracks.getAllByRole('link')[0]).toBe(java);
+    expect(java).toHaveAttribute('href', '/jobs');
+    expect(java).toHaveClass('font-semibold');
+    expect(
+      tracks.getByRole('link', { name: JOBS_PAGE_COPY.focusAll }),
+    ).toHaveAttribute('href', `/jobs?focus=${JOB_FOCUS_ALL}`);
+    expect(container.querySelector(FOCUS_FIELD)).toBeNull();
+    expect(getJobsPageData).toHaveBeenLastCalledWith(
+      expect.objectContaining({ focus: JOB_FOCUS_JAVA }),
+    );
+  });
+
+  it('keeps all roles selected when the filter form is submitted', async () => {
+    const { container } = render(
+      await resolvePageSection(
+        JobsPage({ searchParams: Promise.resolve({ focus: JOB_FOCUS_ALL }) }),
+      ),
+    );
+
+    expect(container.querySelector(FOCUS_FIELD)).toHaveValue(JOB_FOCUS_ALL);
+    expect(getJobsPageData).toHaveBeenLastCalledWith(
+      expect.objectContaining({ focus: undefined }),
+    );
   });
 
   it('offers the focus tracks as links and marks the active one', async () => {
@@ -110,7 +149,10 @@ describe('JobsPage', () => {
     });
     expect(
       within(tracks).getByRole('link', { name: JOBS_PAGE_COPY.focusAll }),
-    ).toHaveAttribute('href', `/jobs?country=${FILTERS.country}`);
+    ).toHaveAttribute(
+      'href',
+      `/jobs?country=${FILTERS.country}&focus=${JOB_FOCUS_ALL}`,
+    );
     // Switching tracks must keep the filters already applied.
     expect(
       within(tracks).getByRole('link', {
@@ -161,7 +203,7 @@ describe('JobsPage', () => {
       seniority: TEST_JOB.seniority,
       remote: undefined,
       country,
-      focus: undefined,
+      focus: JOB_FOCUS_JAVA,
       company: undefined,
       minimumScore,
       limit: JOBS_PAGE_LIMIT,
@@ -214,6 +256,7 @@ describe('JobsPage', () => {
     expect(getJobsPageData).toHaveBeenCalledExactlyOnceWith({
       technology: TEST_JOB.technologies[0],
       country: FILTERS.country,
+      focus: JOB_FOCUS_JAVA,
       seniority: undefined,
       remote: undefined,
       minimumScore: 90,
@@ -258,6 +301,7 @@ describe('JobsPage', () => {
         seniority: undefined,
         remote: undefined,
         country: undefined,
+        focus: JOB_FOCUS_JAVA,
         minimumScore: undefined,
         limit: JOBS_PAGE_LIMIT,
       });

@@ -5,6 +5,7 @@ import { getJobsPageData } from '@/lib/report/get-jobs-page-data';
 import type { JobCountrySlug, JobFocusSlug } from '@/lib/jobs/constants';
 import { routeLocale } from '@/lib/i18n/route-locale/route-locale';
 import { searchMetadata } from '@/lib/seo/search-metadata/search-metadata';
+import { focusSearchValue } from '@/lib/report/focus-search-value/focus-search-value';
 import { JOBS_PAGE_LIMIT } from './constants';
 import { parseJobFilters, type JobsSearchParams } from './parse-job-filters';
 import { JobsHeading, JobsReport } from './jobs-presentation';
@@ -65,7 +66,7 @@ export const generateMetadata = async ({
       seniority: filters.seniority,
       remote: filters.remote,
       country: filters.country,
-      focus: filters.focus,
+      focus: focusSearchValue(filters.focus),
       company: filters.company,
       minimumScore: filters.minimumScore,
     },

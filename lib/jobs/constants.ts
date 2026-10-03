@@ -70,7 +70,13 @@ export const JOB_FOCUS_PRODUCT = 'product' as const;
 
 export const JOB_FOCUS_MOBILE = 'mobile' as const;
 
+export const JOB_FOCUS_JAVA = 'java' as const;
+
+/** The `?focus=` value of "All roles": no lane filter. Not a lane. */
+export const JOB_FOCUS_ALL = 'all' as const;
+
 export const JOB_FOCUS_FILTER_OPTIONS = [
+  { slug: JOB_FOCUS_JAVA },
   { slug: JOB_FOCUS_ENGINEERING },
   { slug: JOB_FOCUS_CLOUD_OPS },
   { slug: JOB_FOCUS_MOBILE },
@@ -79,3 +85,20 @@ export const JOB_FOCUS_FILTER_OPTIONS = [
 ] as const;
 
 export type JobFocusSlug = (typeof JOB_FOCUS_FILTER_OPTIONS)[number]['slug'];
+
+/** Tab order on `/` and `/jobs`: the fork's Java track, every role, the rest. */
+export const JOB_FOCUS_TABS = [
+  JOB_FOCUS_JAVA,
+  JOB_FOCUS_ALL,
+  JOB_FOCUS_ENGINEERING,
+  JOB_FOCUS_CLOUD_OPS,
+  JOB_FOCUS_MOBILE,
+  JOB_FOCUS_DATA_ANNOTATION,
+  JOB_FOCUS_PRODUCT,
+] as const;
+
+/**
+ * The first tab is what `/` and `/jobs` show without a `focus`. It must be a
+ * track, never "All roles": `parseFocusFilter` returns it as a lane.
+ */
+export const DEFAULT_JOB_FOCUS = JOB_FOCUS_TABS[0];

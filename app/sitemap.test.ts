@@ -6,6 +6,8 @@ import {
 } from '@/lib/report/test-fixtures';
 import {
   JOB_COUNTRY_FILTER_OPTIONS,
+  JOB_FOCUS_ALL,
+  JOB_FOCUS_JAVA,
   JOB_MAX_AGE_MS,
   REMOTE_POLICY_REMOTE,
 } from '@/lib/jobs/constants';
@@ -105,6 +107,26 @@ describe('sitemap', () => {
     await expect(sitemap()).resolves.toHaveLength(
       (JOBS.length + 3) * LANGUAGE_COUNT,
     );
+  });
+
+  it('lists the all-roles views and never the default Java track', async () => {
+    vi.mocked(getDb).mockReturnValue({
+      job: { findMany: vi.fn(async () => []) },
+    } as unknown as ReturnType<typeof getDb>);
+    vi.mocked(filterJobCount).mockResolvedValue(MIN_INDEXABLE_JOBS);
+
+    const urls = (await sitemap()).map(({ url }) => url);
+
+    expect(urls).toEqual(
+      expect.arrayContaining(
+        [`/?focus=${JOB_FOCUS_ALL}`, `/jobs?focus=${JOB_FOCUS_ALL}`].map(
+          (path) => new URL(path, DEFAULT_SITE_ORIGIN).href,
+        ),
+      ),
+    );
+    expect(
+      urls.filter((url) => url.includes(`focus=${JOB_FOCUS_JAVA}`)),
+    ).toEqual([]);
   });
 
   it('lists the companies and jobs views of every filter with enough jobs', async () => {

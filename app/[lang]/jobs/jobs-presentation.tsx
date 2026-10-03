@@ -7,9 +7,12 @@ import { PageTitle } from '@/components/ui/PageTitle/PageTitle';
 import type { JobFilters, JobsPageData } from '@/lib/report/get-jobs-page-data';
 import { TECHNOLOGY_NAMES } from '@/lib/classification/constants';
 import {
-  JOB_FOCUS_FILTER_OPTIONS,
+  JOB_FOCUS_ALL,
+  JOB_FOCUS_TABS,
   type JobFocusSlug,
 } from '@/lib/jobs/constants';
+import { focusSearchValue } from '@/lib/report/focus-search-value/focus-search-value';
+import { parseFocusFilter } from '@/lib/report/parse-focus-filter';
 import Link from 'next/link';
 
 const CHIP_BASE = 'inline-flex min-h-[44px] items-center';
@@ -28,7 +31,7 @@ const focusHref = (filters: JobFilters, focus: JobFocusSlug | undefined) => {
     ['country', filters.country],
     ['minimumScore', filters.minimumScore],
     ['company', filters.company],
-    ['focus', focus],
+    ['focus', focusSearchValue(focus)],
   ];
   const params = new URLSearchParams(
     entries
@@ -49,6 +52,7 @@ export const JobsReport = ({
   hasError?: boolean;
 }) => {
   const { locale, messages } = useI18n();
+  const focusValue = focusSearchValue(filters.focus);
   const fields = [
     {
       name: 'technology',
@@ -71,23 +75,20 @@ export const JobsReport = ({
         aria-label={messages.jobs.focusLabel}
         className="flex flex-wrap gap-3 text-sm"
       >
-        <Link
-          href={localizedPath(locale, focusHref(filters, undefined))}
-          className={filters.focus ? INACTIVE_CHIP : ACTIVE_CHIP}
-        >
-          {messages.jobs.focusAll}
-        </Link>
-        {JOB_FOCUS_FILTER_OPTIONS.map((option) => (
-          <Link
-            key={option.slug}
-            href={localizedPath(locale, focusHref(filters, option.slug))}
-            className={
-              filters.focus === option.slug ? ACTIVE_CHIP : INACTIVE_CHIP
-            }
-          >
-            {messages.focus[option.slug]}
-          </Link>
-        ))}
+        {JOB_FOCUS_TABS.map((tab) => {
+          const focus = parseFocusFilter(tab);
+          return (
+            <Link
+              key={tab}
+              href={localizedPath(locale, focusHref(filters, focus))}
+              className={filters.focus === focus ? ACTIVE_CHIP : INACTIVE_CHIP}
+            >
+              {tab === JOB_FOCUS_ALL
+                ? messages.jobs.focusAll
+                : messages.focus[tab]}
+            </Link>
+          );
+        })}
       </nav>
 
       <section aria-labelledby="job-filters">
@@ -95,8 +96,8 @@ export const JobsReport = ({
           {messages.jobs.filtersHeading}
         </h2>
         <form className="grid gap-3 sm:grid-cols-2" method="get">
-          {filters.focus ? (
-            <input type="hidden" name="focus" value={filters.focus} />
+          {focusValue ? (
+            <input type="hidden" name="focus" value={focusValue} />
           ) : null}
           {filters.company ? (
             <input type="hidden" name="company" value={filters.company} />

@@ -5,7 +5,10 @@ import {
   getJobsPageData,
 } from '@/lib/report/get-jobs-page-data';
 import { TEST_REPORT_JOB } from '@/components/report/test-fixtures';
-import { JOB_COUNTRY_FILTER_OPTIONS } from '@/lib/jobs/constants';
+import {
+  JOB_COUNTRY_FILTER_OPTIONS,
+  JOB_FOCUS_JAVA,
+} from '@/lib/jobs/constants';
 import {
   TEST_JOB_ID,
   TEST_REPORT_ERROR_MESSAGE,
@@ -75,7 +78,10 @@ describe('metadata and page request reads', () => {
       }),
       resolvePageSection(Home({ searchParams: Promise.resolve({ country }) })),
     ]);
-    expect(getCompaniesPageData).toHaveBeenCalledExactlyOnceWith({ country });
+    expect(getCompaniesPageData).toHaveBeenCalledExactlyOnceWith({
+      country,
+      focus: JOB_FOCUS_JAVA,
+    });
   });
 
   it('shares normalized job queries, not raw parameter object identity or ignored spellings', async () => {
