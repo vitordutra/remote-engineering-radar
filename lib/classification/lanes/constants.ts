@@ -77,3 +77,53 @@ export const PRODUCT_POSITIONS = [
   ...VOCABULARY.productTitle,
   /\bproduct\s+designer\b/i,
 ] as const;
+
+/** A JVM language the poster chose: in a title, or anchoring a body. */
+export const JAVA_ANCHORS = [/\bjava\b/i, /\bkotlin\b/i] as const;
+
+/** One term per tool family, so "Spring Boot + Spring Data" counts once. */
+export const JAVA_SUPPORT_TERMS = [
+  /\bspring\b/i,
+  /\bhibernate\b|\bjpa\b/i,
+  /\bmaven\b|\bgradle\b/i,
+  /\bquarkus\b/i,
+  /\bmicronaut\b/i,
+  /\bjunit\b|\bmockito\b/i,
+  /\bjakarta\s*ee\b|\bj2ee\b|\bjava\s*ee\b/i,
+  /\bktor\b/i,
+] as const;
+
+export const JAVA_SUPPORT_MINIMUM = 2;
+
+/**
+ * Java jobs the fork does not track, even with Java in the title: internships,
+ * levels above senior, leadership, other disciplines, and mobile platforms,
+ * which Mobile keeps. "Staff augmentation" is an engagement, not a level.
+ */
+export const JAVA_EXCLUDED_POSITIONS = [
+  /\bintern(?:ship)?s?\b|\bestagi(?:o|ari[oa])\b/i,
+  /\bstaff\b(?![\s-]+augmentation)/i,
+  /\bprincipal\b|\bespecialista\b/i,
+  /\blead\b|\blider\b/i,
+  /\barchitect\b|\barquitet[oa]\b/i,
+  /\bmanager\b|\bgerente\b|\bhead\b|\bdirector\b|\bdiretor(?:a)?\b/i,
+  ...QA_POSITIONS,
+  /\bdata\s+engineer(?:ing)?\b|\bengenheir[oa]\s+de\s+dados\b/i,
+  /\bandroid\b|\bios\b|\bmobile\b|\bmultiplatform\b|\bkmp\b/i,
+] as const;
+
+/**
+ * A title that names another stack or discipline and no JVM language. A
+ * leading `\b` would miss " .NET", whose dot is not a word character.
+ */
+export const JAVA_TITLE_VETOES = [
+  /\bpython\b/i,
+  /\bgo(?:lang)?\b/i,
+  /\.net\b|\bdotnet\b|\bc#/i,
+  /\bruby\b|\brails\b/i,
+  /\bphp\b|\blaravel\b/i,
+  /\bnode(?:\.?js)?\b/i,
+  /\breact\b|\bangular\b|\bvue(?:\.?js)?\b/i,
+  /\bfront[-\s]?end\b/i,
+  ...VOCABULARY.cloudOpsTitle,
+] as const;

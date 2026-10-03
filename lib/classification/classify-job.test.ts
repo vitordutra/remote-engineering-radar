@@ -303,6 +303,24 @@ const WORK_AUTHORIZATION_DESCRIPTIONS = [
   'US citizens only due to a federal contract.',
   'Open to U.S. citizens only.',
 ];
+const JAVA_ROLE_FOCUS = 'java';
+const JAVA_BACKEND_JOB = {
+  title: 'Senior Backend Engineer',
+  description:
+    'Java 17 services on Spring Boot with Hibernate, Quarkus, and Micronaut. Some Kotlin.',
+};
+const JAVA_TECHNOLOGIES = [
+  'Java',
+  'Spring',
+  'Hibernate',
+  'Quarkus',
+  'Micronaut',
+  'Kotlin',
+];
+const JAVA_INTERN_JOB = {
+  title: 'Java Intern',
+  description: JAVA_BACKEND_JOB.description,
+};
 const OPEN_TO_CONTRACTORS_DESCRIPTION =
   'Open to contractors across LATAM. Paid in USD.';
 const QUAVE_ANNOTATION_TITLE = 'Senior Full-Stack Engineer';
@@ -604,6 +622,24 @@ describe('classifyJob', () => {
 
     expect(result.roleFocus).not.toContain(PLATFORM_ROLE_FOCUS);
     expect(result.isUnrelatedStack).toBe(true);
+    expect(shouldPersistClassifiedJob(result)).toBe(false);
+  });
+
+  it('keeps a Java backend role on the Java track with its stack', () => {
+    const result = classifyJob(JAVA_BACKEND_JOB);
+
+    expect(result.roleFocus).toContain(JAVA_ROLE_FOCUS);
+    expect(result.technologies).toEqual(
+      expect.arrayContaining(JAVA_TECHNOLOGIES),
+    );
+    expect(result.isUnrelatedStack).toBe(false);
+    expect(shouldPersistClassifiedJob(result)).toBe(true);
+  });
+
+  it('does not persist a Java internship', () => {
+    const result = classifyJob(JAVA_INTERN_JOB);
+
+    expect(result.roleFocus).not.toContain(JAVA_ROLE_FOCUS);
     expect(shouldPersistClassifiedJob(result)).toBe(false);
   });
 

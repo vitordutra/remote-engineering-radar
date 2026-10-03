@@ -16,6 +16,7 @@ export type JobClassification = {
     | 'fullstack'
     | 'backend'
     | 'mobile'
+    | 'java'
     | 'react'
     | 'platform'
     | 'annotation'
