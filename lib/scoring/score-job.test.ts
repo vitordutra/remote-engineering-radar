@@ -1,6 +1,111 @@
 import { scoreJob } from './score-job';
 
+const JAVA_LEVEL_TITLES = [
+  'Junior Java Developer',
+  'Mid-level Java Developer',
+  'Senior Java Developer',
+];
+const JAVA_STACK_DESCRIPTION = 'Java, Spring Boot, and Hibernate.';
+const REMOTE_POLICY = 'remote';
+const LATAM_LOCATION = 'Remote LATAM';
+const JAVA_FULLSTACK_JOB = {
+  title: 'Fullstack Java Developer',
+  description: 'Java, Spring Boot, React, and TypeScript.',
+  remotePolicy: REMOTE_POLICY,
+};
+const JAVA_BACKEND_TITLE = 'Senior Backend Java Developer';
+const JAVA_FULLSTACK_TITLE = 'Senior Fullstack Java Developer';
+const JAVA_CONTRACTOR_TITLE = 'Senior Java Developer (Contractor)';
+const PLAIN_JAVA_TITLE = 'Senior Java Developer';
+const W2_ONLY_DESCRIPTION = `${JAVA_STACK_DESCRIPTION} W2 only.`;
+const REACT_CONTRACTOR_TITLE = 'Senior React Engineer (Contractor)';
+const REACT_TITLE = 'Senior React Engineer';
+const REACT_STACK_DESCRIPTION = 'React and TypeScript.';
+const REACT_W2_ONLY_DESCRIPTION = `${REACT_STACK_DESCRIPTION} W2 only.`;
+const CONTRACTOR_REASON = 'Contractor';
+const WORK_AUTHORIZATION_REASON = 'Work authorization required';
+const BACKEND_REASON = 'Backend';
+const CONTRACTOR_WEIGHT = 10;
+const WORK_AUTHORIZATION_WEIGHT = -40;
+
+const javaJob = (title: string, description = JAVA_STACK_DESCRIPTION) =>
+  scoreJob({
+    title,
+    description,
+    location: LATAM_LOCATION,
+    remotePolicy: REMOTE_POLICY,
+  });
+
 describe('scoreJob', () => {
+  describe('Java lane', () => {
+    it('scores junior, mid-level, and senior Java jobs the same', () => {
+      const [junior, mid, senior] = JAVA_LEVEL_TITLES.map((title) =>
+        javaJob(title),
+      );
+
+      expect(junior.rawScore).toBe(senior.rawScore);
+      expect(mid.rawScore).toBe(senior.rawScore);
+      expect(junior.reasons).toContain('Junior');
+      expect(mid.reasons).toContain('Mid-level');
+      expect(senior.reasons).toContain('Senior');
+    });
+
+    it('pays the Java stack instead of the React table', () => {
+      const result = scoreJob(JAVA_FULLSTACK_JOB);
+
+      expect(result.reasons).toEqual(
+        expect.arrayContaining(['Java', 'Spring']),
+      );
+      expect(result.reasons).not.toContain('React');
+      expect(result.reasons).not.toContain('TypeScript');
+    });
+
+    it('pays a backend Java job like a fullstack one', () => {
+      const backend = javaJob(JAVA_BACKEND_TITLE);
+      const fullstack = javaJob(JAVA_FULLSTACK_TITLE);
+
+      expect(backend.rawScore).toBe(fullstack.rawScore);
+      expect(backend.reasons).toContain(BACKEND_REASON);
+    });
+
+    it('pays a contractor engagement', () => {
+      const contractor = javaJob(JAVA_CONTRACTOR_TITLE);
+      const employee = javaJob(PLAIN_JAVA_TITLE);
+
+      expect(contractor.rawScore - employee.rawScore).toBe(CONTRACTOR_WEIGHT);
+      expect(contractor.reasons).toContain(CONTRACTOR_REASON);
+    });
+
+    it('penalizes a US work-authorization requirement', () => {
+      const w2Only = javaJob(PLAIN_JAVA_TITLE, W2_ONLY_DESCRIPTION);
+      const open = javaJob(PLAIN_JAVA_TITLE);
+
+      expect(w2Only.rawScore - open.rawScore).toBe(WORK_AUTHORIZATION_WEIGHT);
+      expect(w2Only.reasons).toContain(WORK_AUTHORIZATION_REASON);
+    });
+
+    it('leaves contractor and work authorization unscored off the Java lane', () => {
+      const plain = scoreJob({
+        title: REACT_TITLE,
+        description: REACT_STACK_DESCRIPTION,
+      });
+      const contractor = scoreJob({
+        title: REACT_CONTRACTOR_TITLE,
+        description: REACT_STACK_DESCRIPTION,
+      });
+      const w2Only = scoreJob({
+        title: REACT_TITLE,
+        description: REACT_W2_ONLY_DESCRIPTION,
+      });
+
+      expect(contractor.rawScore).toBe(plain.rawScore);
+      expect(w2Only.rawScore).toBe(plain.rawScore);
+      expect([...contractor.reasons, ...w2Only.reasons]).not.toEqual(
+        expect.arrayContaining([CONTRACTOR_REASON]),
+      );
+    });
+  });
+
   it('scores a high-fit Senior React TypeScript GraphQL Remote LATAM job highly', () => {
     const result = scoreJob({
       title: 'Senior Frontend Engineer',
